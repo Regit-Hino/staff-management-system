@@ -4,7 +4,7 @@ oplus系のシフト管理システムのスタッフ管理機能を忠実に再
 
 ## 🚀 デモ
 
-[Live Demo](https://your-username.github.io/staff-management-system/)
+[Live Demo](https://regit-hino.github.io/staff-management-system/)
 
 ## ✨ 主要機能
 
