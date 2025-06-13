@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3点リーダーテスト</title>
+    <style>
+        .actions { cursor: pointer; padding: 10px; background: #f0f0f0; margin: 5px; }
+        .action-menu { display: none; position: absolute; background: white; border: 1px solid #ccc; }
+        .action-menu-item { padding: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div id="test-container">
+        <div class="test-row">
+            <span>テストスタッフ1</span>
+            <div class="actions">⋮</div>
+        </div>
+        <div class="test-row">
+            <span>テストスタッフ2</span>
+            <div class="actions">⋮</div>
+        </div>
+    </div>
+
+    <div id="actionMenu" class="action-menu">
+        <div class="action-menu-item" id="editStaffBtn">編集</div>
+        <div class="action-menu-item" id="deleteStaffBtn">削除</div>
+    </div>
+
+    <script>
+        let currentActionRow = null;
+        let actionMenuVisible = false;
+
+        // イベント委譲でテスト
+        document.addEventListener('click', function(e) {
+            const actionButton = e.target.closest('.actions');
+            if (actionButton) {
+                e.stopPropagation();
+                console.log('Action button clicked!');
+                
+                const menu = document.getElementById('actionMenu');
+                currentActionRow = actionButton.closest('.test-row');
+                
+                console.log('currentActionRow set to:', currentActionRow);
+                
+                if (actionMenuVisible) {
+                    menu.style.display = 'none';
+                    actionMenuVisible = false;
+                    return;
+                }
+                
+                const rect = actionButton.getBoundingClientRect();
+                menu.style.display = 'block';
+                menu.style.left = (rect.left - 100) + 'px';
+                menu.style.top = (rect.bottom + 5) + 'px';
+                
+                actionMenuVisible = true;
+            } else if (actionMenuVisible && !e.target.closest('#actionMenu')) {
+                document.getElementById('actionMenu').style.display = 'none';
+                actionMenuVisible = false;
+            }
+        });
+
+        // 編集ボタン
+        document.getElementById('editStaffBtn').addEventListener('click', function() {
+            console.log('Edit clicked, currentActionRow:', currentActionRow);
+            if (currentActionRow) {
+                alert('編集: ' + currentActionRow.querySelector('span').textContent);
+            }
+        });
+    </script>
+</body>
+</html>

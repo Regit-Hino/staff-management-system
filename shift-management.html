@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>シフト管理 - シフト管理システム</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/staff-management.css">
+    <link rel="stylesheet" href="css/shift-management.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <select class="company-select">
+                <option>会社</option>
+            </select>
+            <div class="logo">シフト番長</div>
+        </div>
+        <div class="header-right">
+            <i class="fas fa-bell notification-icon"></i>
+            <span class="user-name">日野</span>
+        </div>
+    </div>
+    
+    <div class="container">
+        <nav class="sidebar">
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-chart-bar"></i>
+                グラフ
+            </a>
+            <a href="index.html" class="nav-item">
+                <i class="nav-icon fas fa-users"></i>
+                スタッフ管理
+            </a>
+            <a href="#" class="nav-item active">
+                <i class="nav-icon fas fa-calendar-alt"></i>
+                シフト管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-briefcase"></i>
+                業務管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-clock"></i>
+                勤怠管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-umbrella-beach"></i>
+                有休管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-clipboard-list"></i>
+                各種申請/承認
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-globe"></i>
+                社員ページ
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-stopwatch"></i>
+                計画管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-bullhorn"></i>
+                メガホン
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-cog"></i>
+                設定
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-qrcode"></i>
+                打刻用QRコード
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-file-upload"></i>
+                シフト提出
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-id-card"></i>
+                タイムカード
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-clipboard"></i>
+                掲示板
+            </a>
+            <button class="upgrade-btn">アップグレード</button>
+        </nav>
+        
+        <main class="main-content">
+            <div class="breadcrumb">
+                <a href="#" class="breadcrumb-back">←</a>
+                シフト表　NG組み合わせ
+            </div>
+            
+            <!-- タブナビゲーション -->
+            <div class="tab-navigation">
+                <div class="tab active">
+                    <i class="fas fa-calendar-alt"></i>
+                    シフト
+                </div>
+                <div class="tab">
+                    <i class="fas fa-briefcase"></i>
+                    業務
+                </div>
+                <div class="tab">
+                    <i class="fas fa-calculator"></i>
+                    カウント
+                </div>
+                <div class="tab">
+                    <i class="fas fa-chart-bar"></i>
+                    制出
+                </div>
+                <div class="tab">
+                    <i class="fas fa-list"></i>
+                    労務
+                </div>
+            </div>
+            
+            <!-- カレンダーヘッダー -->
+            <div class="calendar-header">
+                <div class="calendar-navigation">
+                    <button class="nav-btn" id="prevPeriod">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="today-btn">今日</button>
+                    <button class="nav-btn" id="nextPeriod">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <span class="period-display" id="periodDisplay">2025年6月1日 - 2025年6月30日</span>
+                </div>
+                
+                <div class="calendar-controls">
+                    <div class="view-selector">
+                        <select id="viewType">
+                            <option value="day">日</option>
+                            <option value="week">週</option>
+                            <option value="month" selected>月</option>
+                            <option value="custom">カスタム</option>
+                        </select>
+                    </div>
+                    <button class="control-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button class="control-btn">
+                        <i class="fas fa-info-circle"></i>
+                    </button>
+                    <button class="control-btn">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button class="control-btn" id="filterBtn" onclick="showFilterModal()">
+                        <i class="fas fa-caret-down"></i>
+                    </button>
+                    <button class="control-btn">
+                        <i class="fas fa-calendar"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- シフトカレンダー -->
+            <div class="shift-calendar">
+                <div class="calendar-wrapper">
+                    <div class="staff-column">
+                        <!-- 日付ヘッダーに対応する空白セル -->
+                        <div class="staff-header-spacer"></div>
+                        
+                        <div class="summary-row">
+                            <div class="summary-label">割当人数</div>
+                        </div>
+                        <div class="summary-row">
+                            <div class="summary-label">人時</div>
+                        </div>
+                        <div class="summary-row">
+                            <div class="summary-label">人件費</div>
+                        </div>
+                        
+                        <!-- スタッフリスト -->
+                        <div class="staff-list" id="staffList">
+                            <!-- スタッフはJavaScriptで動的に生成 -->
+                        </div>
+                    </div>
+                    
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- カレンダーグリッドはJavaScriptで動的に生成 -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ボトムツールバー -->
+            <div class="bottom-toolbar">
+                <button class="toolbar-btn">テンプレ</button>
+                <button class="toolbar-btn">
+                    <i class="fas fa-plus"></i>
+                    追加
+                </button>
+                <button class="toolbar-btn">要請</button>
+                <button class="toolbar-btn">確定</button>
+                <button class="toolbar-btn delete">
+                    <i class="fas fa-trash"></i>
+                </button>
+                <button class="toolbar-btn">
+                    <i class="fas fa-calendar"></i>
+                    自動
+                    <span class="pro-badge">P</span>
+                </button>
+                <button class="toolbar-btn">
+                    <i class="fas fa-file-import"></i>
+                    取込
+                </button>
+                <button class="toolbar-btn">
+                    <i class="fas fa-file-export"></i>
+                    出力
+                </button>
+                <button class="toolbar-btn">印刷</button>
+                <button class="toolbar-btn">
+                    <i class="fas fa-cog"></i>
+                    設定
+                </button>
+            </div>
+        </main>
+    </div>
+    
+    <!-- カスタム期間選択モーダル -->
+    <div id="customRangeModal" class="modal custom-range-modal">
+        <div class="modal-content custom-range-content">
+            <div class="modal-header custom-range-header">
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="custom-range-body">
+                <div class="calendar-container">
+                    <div class="month-calendar" id="leftCalendar">
+                        <div class="month-header">
+                            <button class="month-nav" id="leftPrev">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span class="month-title" id="leftMonthTitle">6月 2025</span>
+                        </div>
+                        <div class="calendar-grid-small" id="leftCalendarGrid">
+                            <!-- 左カレンダーグリッド -->
+                        </div>
+                    </div>
+                    
+                    <div class="month-calendar" id="rightCalendar">
+                        <div class="month-header">
+                            <span class="month-title" id="rightMonthTitle">7月 2025</span>
+                            <button class="month-nav" id="rightNext">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="calendar-grid-small" id="rightCalendarGrid">
+                            <!-- 右カレンダーグリッド -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="range-actions">
+                    <button class="range-btn cancel" onclick="closeCustomRangeModal()">閉じる</button>
+                    <button class="range-btn confirm" onclick="applyCustomRange()">適用</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- フィルターモーダル -->
+    <div id="filterModal" class="modal filter-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">フィルター</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="filter-options">
+                    <div class="filter-option">
+                        <input type="checkbox" id="attendeeOnlyFilter" class="filter-checkbox">
+                        <label for="attendeeOnlyFilter" class="filter-label">出勤者のみ</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="confirmedOnlyFilter" class="filter-checkbox">
+                        <label for="confirmedOnlyFilter" class="filter-label">確定のみ</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-modal btn-modal-secondary" onclick="clearFilters()">クリア</button>
+                <button type="button" class="btn-modal btn-modal-primary" onclick="applyFilters()">適用</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/shift-management.js"></script>
+</body>
+</html>

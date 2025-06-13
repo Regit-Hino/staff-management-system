@@ -1,0 +1,293 @@
+/* スタッフ編集画面専用CSS */
+
+.edit-header {
+    margin-bottom: 20px;
+}
+
+.edit-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #495057;
+    margin: 0;
+}
+
+.staff-name-title {
+    color: #007bff;
+}
+
+.edit-container {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.edit-sections {
+    display: flex;
+    min-height: 600px;
+}
+
+.edit-section {
+    flex: 1;
+    padding: 30px;
+    border-right: 1px solid #e9ecef;
+}
+
+.edit-section:last-child {
+    border-right: none;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #495057;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #495057;
+    background: white;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-col {
+    flex: 1;
+}
+
+.form-col .form-label {
+    margin-bottom: 8px;
+}
+
+.email-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.email-group .form-input {
+    flex: 1;
+}
+
+.btn {
+    padding: 8px 16px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background: white;
+    color: #495057;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+}
+
+.btn:hover {
+    background: #f8f9fa;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    border-color: #6c757d;
+    font-size: 12px;
+    padding: 6px 12px;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+    border-color: #5a6268;
+}
+
+.form-note {
+    font-size: 11px;
+    color: #dc3545;
+    margin-top: 5px;
+    line-height: 1.4;
+}
+
+.date-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.date-input {
+    width: 80px;
+}
+
+.date-separator {
+    font-size: 13px;
+    color: #6c757d;
+    margin: 0 2px;
+}
+
+.permission-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.permission-badge {
+    background: #e9ecef;
+    color: #495057;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.permission-badge.manager {
+    background: #d4edda;
+    color: #155724;
+}
+
+.pro-badge {
+    background: #17a2b8;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: normal;
+    margin-left: 5px;
+}
+
+.tag-input-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.tag-input-group .form-input {
+    flex: 1;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #495057;
+    cursor: pointer;
+    margin: 0;
+}
+
+.checkbox-icon {
+    color: #28a745;
+    font-size: 14px;
+}
+
+.checkbox-input {
+    margin: 0;
+    transform: scale(1.1);
+}
+
+.checkbox-text {
+    font-size: 13px;
+    color: #495057;
+    margin: 0;
+    cursor: pointer;
+}
+
+.edit-footer {
+    padding: 20px 30px;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    text-align: right;
+}
+
+.btn-save {
+    min-width: 100px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .edit-sections {
+        flex-direction: column;
+    }
+    
+    .edit-section {
+        border-right: none;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .edit-section:last-child {
+        border-bottom: none;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .email-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .date-inputs {
+        flex-wrap: wrap;
+    }
+    
+    .tag-input-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

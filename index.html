@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スタッフ管理 - シフト管理システム</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/staff-management.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <select class="company-select">
+                <option>会社</option>
+            </select>
+            <div class="logo">シフト番長</div>
+        </div>
+        <div class="header-right">
+            <i class="fas fa-bell notification-icon"></i>
+            <span class="user-name">日野</span>
+        </div>
+    </div>
+    
+    <div class="container">
+        <nav class="sidebar">
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-chart-bar"></i>
+                グラフ
+            </a>
+            <a href="#" class="nav-item active">
+                <i class="nav-icon fas fa-users"></i>
+                スタッフ管理
+            </a>
+            <a href="shift-management.html" class="nav-item">
+                <i class="nav-icon fas fa-calendar-alt"></i>
+                シフト管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-briefcase"></i>
+                業務管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-clock"></i>
+                勤怠管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-umbrella-beach"></i>
+                有休管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-clipboard-list"></i>
+                各種申請/承認
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-globe"></i>
+                社員ページ
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-stopwatch"></i>
+                計画管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-bullhorn"></i>
+                メガホン
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-cog"></i>
+                設定
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-qrcode"></i>
+                打刻用QRコード
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-file-upload"></i>
+                シフト提出
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-id-card"></i>
+                タイムカード
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-clipboard"></i>
+                掲示板
+            </a>
+            <button class="upgrade-btn">アップグレード</button>
+        </nav>
+        
+        <main class="main-content">
+            <div class="breadcrumb">
+                <a href="#" class="breadcrumb-back">←</a>
+                スタッフ表　NG組み合わせ
+            </div>
+            
+            <div class="page-header">
+                <h1 class="page-title">
+                    スタッフ表
+                    <span class="staff-count">5名</span>
+                </h1>
+                <div class="header-actions">
+                    <button class="btn">
+                        <i class="fas fa-download"></i>
+                        出力
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        追加
+                    </button>
+                    <!-- 追加ボタンドロップダウンメニュー -->
+                    <div id="addDropdown" class="add-dropdown">
+                        <div class="add-dropdown-item" data-modal="staffRegisterModal">
+                            <i class="fas fa-user-plus"></i>
+                            スタッフ登録
+                        </div>
+                        <div class="add-dropdown-item" data-modal="tempStaffRegisterModal">
+                            <i class="fas fa-user-clock"></i>
+                            仮スタッフ登録
+                        </div>
+                        <div class="add-dropdown-item" data-modal="linkModal">
+                            <i class="fas fa-link"></i>
+                            リンク
+                        </div>
+                        <div class="add-dropdown-item" data-modal="qrModal">
+                            <i class="fas fa-qrcode"></i>
+                            QRコード
+                        </div>
+                        <div class="add-dropdown-item" data-modal="csvModal">
+                            <i class="fas fa-file-csv"></i>
+                            CSVインポート
+                        </div>
+                        <div class="add-dropdown-item" data-modal="smsModal">
+                            <i class="fas fa-sms"></i>
+                            SMS
+                        </div>
+                        <div class="add-dropdown-item" data-modal="ocrModal">
+                            <i class="fas fa-file-download"></i>
+                            OCRダウンロード
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="staff-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>名前</th>
+                            <th>メモ</th>
+                            <th>社員番号</th>
+                            <th>タグ</th>
+                            <th>時給</th>
+                            <th>交通費</th>
+                            <th>月最大出勤数</th>
+                            <th>連絡先</th>
+                            <th>権限</th>
+                            <th>シフト表</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="drag-handle">
+                                    <i class="fas fa-grip-vertical"></i>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="staff-name admin">日野 真文</div>
+                                <div class="staff-memo">ののたのみ</div>
+                            </td>
+                            <td class="empty-field">−</td>
+                            <td class="empty-field">−</td>
+                            <td class="empty-field">−</td>
+                            <td class="currency">0円</td>
+                            <td class="currency">0円</td>
+                            <td>無</td>
+                            <td>
+                                takafumi.hino@regit-technology.com<br>
+                                09077495849
+                            </td>
+                            <td>
+                                <span class="role-display">管理者</span>
+                            </td>
+                            <td><span class="shift-check">✓</span></td>
+                            <td>
+                                <div class="actions">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="drag-handle">
+                                    <i class="fas fa-grip-vertical"></i>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="staff-name">Regit 高木</div>
+                                <div class="staff-memo">れじっと たかぎ</div>
+                            </td>
+                            <td class="empty-field">−</td>
+                            <td class="empty-field">−</td>
+                            <td class="empty-field">−</td>
+                            <td class="currency">0円</td>
+                            <td class="currency">0円</td>
+                            <td>無</td>
+                            <td>bowlingnopin@gmail.com</td>
+                            <td>
+                                <span class="role-display">スタッフ</span>
+                            </td>
+                            <td><span class="shift-check">✓</span></td>
+                            <td>
+                                <div class="actions">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="drag-handle">
+                                    <i class="fas fa-grip-vertical"></i>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="staff-name">タロウ</div>
+                                <div class="staff-memo">たろう</div>
+                            </td>
+                            <td class="empty-field">−</td>
+                            <td class="empty-field">−</td>
+                            <td class="empty-field">−</td>
+                            <td class="currency">0円</td>
+                            <td class="currency">0円</td>
+                            <td>無</td>
+                            <td>funingtoor0721@docomo.ne.jp</td>
+                            <td>
+                                <span class="role-display">スタッフ</span>
+                            </td>
+                            <td><span class="shift-check">✓</span></td>
+                            <td>
+                                <div class="actions">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="drag-handle">
+                                    <i class="fas fa-grip-vertical"></i>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="staff-name">一雄</div>
+                                <div class="staff-memo">仮</div>
+                            </td>
+                            <td class="empty-field">−</td>
+                            <td class="empty-field">−</td>
+                            <td class="empty-field">−</td>
+                            <td class="currency">0円</td>
+                            <td class="currency">0円</td>
+                            <td>無</td>
+                            <td class="empty-field">−</td>
+                            <td>
+                                <span class="role-display">スタッフ</span>
+                            </td>
+                            <td><span class="shift-check">✓</span></td>
+                            <td>
+                                <div class="actions">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="drag-handle">
+                                    <i class="fas fa-grip-vertical"></i>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="staff-name">上原</div>
+                                <div class="staff-memo">仮</div>
+                            </td>
+                            <td class="empty-field">−</td>
+                            <td class="empty-field">−</td>
+                            <td class="empty-field">−</td>
+                            <td class="currency">0円</td>
+                            <td class="currency">0円</td>
+                            <td>無</td>
+                            <td class="empty-field">−</td>
+                            <td>
+                                <span class="role-display">スタッフ</span>
+                            </td>
+                            <td><span class="shift-check">✓</span></td>
+                            <td>
+                                <div class="actions">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="pagination">
+                    <button class="page-btn" disabled>
+                        <i class="fas fa-angle-double-left"></i>
+                    </button>
+                    <button class="page-btn" disabled>
+                        <i class="fas fa-angle-left"></i>
+                    </button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn" disabled>
+                        <i class="fas fa-angle-right"></i>
+                    </button>
+                    <button class="page-btn" disabled>
+                        <i class="fas fa-angle-double-right"></i>
+                    </button>
+                    <span class="items-per-page">25件</span>
+                </div>
+            </div>
+            
+            <div class="invite-section">
+                <h2 class="invite-title">
+                    <i class="fas fa-users invite-icon-header"></i>
+                    スタッフ招待
+                </h2>
+                <div class="invite-grid">
+                    <div class="invite-card">
+                        <div class="invite-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="invite-label">スタッフ登録</div>
+                    </div>
+                    <div class="invite-card">
+                        <div class="invite-icon">
+                            <i class="fas fa-user-clock"></i>
+                        </div>
+                        <div class="invite-label">仮スタッフ登録</div>
+                    </div>
+                    <div class="invite-card">
+                        <div class="invite-icon">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <div class="invite-label">リンク</div>
+                    </div>
+                    <div class="invite-card">
+                        <div class="invite-icon">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <div class="invite-label">QRコード</div>
+                    </div>
+                    <div class="invite-card">
+                        <div class="invite-icon">
+                            <i class="fas fa-file-csv"></i>
+                        </div>
+                        <div class="invite-label">CSVインポート</div>
+                    </div>
+                    <div class="invite-card">
+                        <div class="invite-icon">
+                            <i class="fas fa-sms"></i>
+                        </div>
+                        <div class="invite-label">SMS</div>
+                    </div>
+                    <div class="invite-card">
+                        <div class="invite-icon">
+                            <i class="fas fa-file-download"></i>
+                        </div>
+                        <div class="invite-label">OCR<br>ダウンロード</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- 3点リーダーアクションメニュー -->
+    <div id="actionMenu" class="action-menu">
+        <div class="action-menu-item" id="editStaffBtn">
+            <i class="fas fa-edit"></i>
+            編集
+        </div>
+        <div class="action-menu-item danger" id="deleteStaffBtn">
+            <i class="fas fa-trash"></i>
+            削除
+        </div>
+    </div>
+    
+    <!-- モーダル群 -->
+    <!-- スタッフ登録モーダル -->
+    <div id="staffRegisterModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">スタッフ登録</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label class="form-label">名前</label>
+                        <input type="text" class="form-input" placeholder="オプラス 太郎">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">ふりがな</label>
+                        <input type="text" class="form-input" placeholder="おぷらす たろう">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" placeholder="xxx.xxxx@xxx.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">電話番号</label>
+                        <input type="tel" class="form-input" placeholder="(888)-8888-8888">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-modal btn-modal-primary" onclick="registerStaff(false)">スタッフ登録</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 仮スタッフ登録モーダル -->
+    <div id="tempStaffRegisterModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">仮スタッフ登録</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label class="form-label">名前</label>
+                        <input type="text" class="form-input" placeholder="オプラス 太郎">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">ふりがな</label>
+                        <input type="text" class="form-input" placeholder="仮">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-modal btn-modal-primary" onclick="registerStaff(true)">仮スタッフ登録</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- リンクモーダル -->
+    <div id="linkModal" class="modal link-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">リンク</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-description">
+                    リンクからスタッフが登録出来ます
+                </div>
+                <div class="invite-url">
+                    https://opluswork.com/company/5927058428395520/join
+                </div>
+                <button class="copy-btn" onclick="copyToClipboard('https://opluswork.com/company/5927058428395520/join')">コピー</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- QRコードモーダル -->
+    <div id="qrModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">QRコード</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="qr-code-container">
+                    <div class="qr-placeholder">
+                        ■■■■■■■■■■■■■■■<br>
+                        ■■　　■■■■　■■■■■<br>
+                        ■■■■■■■■■■■■■■■<br>
+                        ■■■■■■■■■■■■■■■<br>
+                        ■■■■■■■■■■■■■■■<br>
+                        ■■■■■■■■■■■■■■■<br>
+                        ■■■■■■■■■■■■■■■<br>
+                        ■■■■■■■■■■■■■■■<br>
+                        ■■■■■■■■■■■■■■■<br>
+                        ■■■■■■■■■■■■■■■<br>
+                        ■■■■■■■■■■■■■■■
+                    </div>
+                    <div class="qr-description">
+                        QRコードからスタッフが登録出来ます
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CSVインポートモーダル -->
+    <div id="csvModal" class="modal csv-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">CSVインポート</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-description">
+                    CSVファイルから複数のスタッフを登録出来ます。メールアドレスは必須となっております。なお、こちらの機能で編集する事も出来ます。<br>
+                    <a href="#" style="color: #007bff;">CSVファイルでのサンプル</a>
+                </div>
+                <div class="file-upload-area" id="csvUploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="upload-text">ファイルをインポート</div>
+                    <div class="upload-subtext">
+                        選択されていません<br>
+                        ドラッグ&ドロップまたは <a href="#" style="color: #007bff;">参照</a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-modal btn-modal-primary">インポート</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- SMSモーダル -->
+    <div id="smsModal" class="modal sms-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">SMS</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-description">
+                    スタッフへ登録用URLが送信されます
+                </div>
+                <div class="form-group">
+                    <label class="form-label">電話番号</label>
+                    <input type="tel" class="form-input" placeholder="電話番号">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-modal btn-modal-primary">送信</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- OCRダウンロードモーダル -->
+    <div id="ocrModal" class="modal ocr-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">OCRタイムシート</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-description">
+                    OCRタイムシートを印刷しシフトを記入することが出来ます。<br><br>
+                    サイズはA4、黒インクで印刷をしてください。<br><br>
+                    なお、記入したシートはシフト管理のクイックスキャンにて読み込むことで、シフトをインポートすることが可能です。
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-modal btn-modal-primary">ダウンロード</button>
+                <button type="button" class="btn-modal btn-modal-secondary">印刷</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- スタッフ編集モーダル -->
+    <div id="staffEditModal" class="modal edit-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">スタッフ編集</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="edit-sections">
+                    <!-- 個人情報 -->
+                    <div class="edit-section">
+                        <h4 class="section-title">個人情報</h4>
+                        <div class="form-group">
+                            <label class="form-label">名前</label>
+                            <input type="text" class="form-input" id="edit-name" value="日野 真文">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">ふりがな</label>
+                            <input type="text" class="form-input" id="edit-furigana" value="ひの たかふみ">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">電子メール</label>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <input type="email" class="form-input" id="edit-email" value="takafumi.hino@regit-technology.com" style="flex: 1;">
+                                <button class="btn" style="font-size: 11px; padding: 4px 8px;">メールの変更</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">電話番号</label>
+                            <input type="tel" class="form-input" id="edit-phone" value="09077495849">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">連携用ID</label>
+                            <input type="text" class="form-input" id="edit-connection-id">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">メモ</label>
+                            <textarea class="form-input" id="edit-memo" rows="3"></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- 企業情報 -->
+                    <div class="edit-section">
+                        <h4 class="section-title">企業情報</h4>
+                        <div class="form-group">
+                            <label class="form-label">社員番号</label>
+                            <input type="text" class="form-input" id="edit-employee-id">
+                            <div class="form-note">※同一の番号を複数の方に登録することはできません（設任意です）</div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col-half">
+                                <label class="form-label">時給</label>
+                                <input type="number" class="form-input" id="edit-hourly-wage" value="0">
+                            </div>
+                            <div class="form-col-half">
+                                <label class="form-label">交通費</label>
+                                <input type="number" class="form-input" id="edit-transport" value="0">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col-half">
+                                <label class="form-label">月最大出勤数</label>
+                                <input type="number" class="form-input" id="edit-max-monthly" value="0">
+                            </div>
+                            <div class="form-col-half">
+                                <label class="form-label">月休み希望数</label>
+                                <input type="number" class="form-input" id="edit-monthly-break" value="0">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col-half">
+                                <label class="form-label">週最低労務</label>
+                                <input type="text" class="form-input time-input" id="edit-week-min" placeholder="HH:MM">
+                            </div>
+                            <div class="form-col-half">
+                                <label class="form-label">週最大労務</label>
+                                <input type="text" class="form-input time-input" id="edit-week-max" placeholder="HH:MM">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col-half">
+                                <label class="form-label">月最低労務</label>
+                                <input type="text" class="form-input time-input" id="edit-month-min" placeholder="HH:MM">
+                            </div>
+                            <div class="form-col-half">
+                                <label class="form-label">月最大労務</label>
+                                <input type="text" class="form-input time-input" id="edit-month-max" placeholder="HH:MM">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">入社日</label>
+                            <div class="date-inputs">
+                                <input type="number" class="form-input" id="edit-join-year" placeholder="YYYY" min="1900" max="2100">
+                                <span>年</span>
+                                <input type="number" class="form-input" id="edit-join-month" placeholder="1" min="1" max="12">
+                                <span>月</span>
+                                <input type="number" class="form-input" id="edit-join-day" placeholder="1" min="1" max="31">
+                                <span>日</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">週所定労働日数</label>
+                            <input type="number" class="form-input" id="edit-weekly-days" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">権限</label>
+                            <select class="form-input" id="edit-role">
+                                <option value="管理者">管理者</option>
+                                <option value="スタッフ" selected>スタッフ</option>
+                            </select>
+                            <div class="role-badges">
+                                <span class="role-badge manager">管理者</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">タグ</label>
+                            <div class="tag-input-container">
+                                <input type="text" class="form-input tag-input" id="edit-tag" placeholder="タグ">
+                                <button type="button" class="add-tag-btn">追加</button>
+                            </div>
+                        </div>
+                        <div class="checkbox-row">
+                            <input type="checkbox" id="edit-apply-all">
+                            <label for="edit-apply-all">変更した内容を所属拠点すべてに反映する</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-modal btn-modal-primary" onclick="saveStaffEdit()">変更</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/staff-management.js"></script>
+</body>
+</html>

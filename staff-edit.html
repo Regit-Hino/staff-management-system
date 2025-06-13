@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スタッフ編集 - シフト管理システム</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/staff-management.css">
+    <link rel="stylesheet" href="css/staff-edit.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <select class="company-select">
+                <option>会社</option>
+            </select>
+            <div class="logo">シフト番長</div>
+        </div>
+        <div class="header-right">
+            <i class="fas fa-bell notification-icon"></i>
+            <span class="user-name">日野</span>
+        </div>
+    </div>
+    
+    <div class="container">
+        <nav class="sidebar">
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-chart-bar"></i>
+                グラフ
+            </a>
+            <a href="#" class="nav-item active">
+                <i class="nav-icon fas fa-users"></i>
+                スタッフ管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-calendar-alt"></i>
+                シフト管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-briefcase"></i>
+                業務管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-clock"></i>
+                勤怠管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-umbrella-beach"></i>
+                有休管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-clipboard-list"></i>
+                各種申請/承認
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-globe"></i>
+                社員ページ
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-stopwatch"></i>
+                計画管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-bullhorn"></i>
+                メガホン
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-cog"></i>
+                設定
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-qrcode"></i>
+                打刻用QRコード
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-file-upload"></i>
+                シフト提出
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-id-card"></i>
+                タイムカード
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-clipboard"></i>
+                掲示板
+            </a>
+            <button class="upgrade-btn">アップグレード</button>
+        </nav>
+        
+        <main class="main-content">
+            <div class="breadcrumb">
+                <a href="#" class="breadcrumb-back" onclick="goBackToStaffList()">←</a>
+                スタッフ表　NG組み合わせ
+            </div>
+            
+            <div class="edit-header">
+                <h1 class="edit-title">
+                    スタッフ表 > <span class="staff-name-title">日野 真文</span>
+                </h1>
+            </div>
+            
+            <div class="edit-container">
+                <div class="edit-sections">
+                    <!-- 個人情報セクション -->
+                    <div class="edit-section">
+                        <h2 class="section-title">個人情報</h2>
+                        
+                        <div class="form-group">
+                            <label class="form-label">名前</label>
+                            <input type="text" class="form-input" id="edit-name" value="日野 真文">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">ふりがな</label>
+                            <input type="text" class="form-input" id="edit-furigana" value="ひの たかふみ">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">電子メール</label>
+                            <div class="email-group">
+                                <input type="email" class="form-input" id="edit-email" value="takafumi.hino@regit-technology.com">
+                                <button type="button" class="btn btn-secondary">メールの変更</button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">電話番号</label>
+                            <input type="tel" class="form-input" id="edit-phone" value="09077495849">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">連携用ID</label>
+                            <input type="text" class="form-input" id="edit-connection-id" value="">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">メモ</label>
+                            <textarea class="form-input form-textarea" id="edit-memo" rows="4"></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- 企業情報セクション -->
+                    <div class="edit-section">
+                        <h2 class="section-title">企業情報</h2>
+                        
+                        <div class="form-group">
+                            <label class="form-label">社員番号</label>
+                            <input type="text" class="form-input" id="edit-employee-id" value="">
+                            <div class="form-note">※同一の番号を複数の方に登録することはできません（設任意です）</div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label class="form-label">時給</label>
+                                <input type="number" class="form-input" id="edit-hourly-wage" value="0">
+                            </div>
+                            <div class="form-col">
+                                <label class="form-label">交通費</label>
+                                <input type="number" class="form-input" id="edit-transport" value="0">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label class="form-label">月最大出勤数</label>
+                                <input type="number" class="form-input" id="edit-max-monthly" value="0">
+                            </div>
+                            <div class="form-col">
+                                <label class="form-label">月休み希望数</label>
+                                <input type="number" class="form-input" id="edit-monthly-break" value="0">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label class="form-label">週最低労務</label>
+                                <input type="text" class="form-input" id="edit-week-min" placeholder="HH:MM">
+                            </div>
+                            <div class="form-col">
+                                <label class="form-label">週最大労務</label>
+                                <input type="text" class="form-input" id="edit-week-max" placeholder="HH:MM">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label class="form-label">月最低労務</label>
+                                <input type="text" class="form-input" id="edit-month-min" placeholder="HH:MM">
+                            </div>
+                            <div class="form-col">
+                                <label class="form-label">月最大労務</label>
+                                <input type="text" class="form-input" id="edit-month-max" placeholder="HH:MM">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">入社日</label>
+                            <div class="date-inputs">
+                                <input type="number" class="form-input date-input" id="edit-join-year" placeholder="YYYY" min="1900" max="2100">
+                                <span class="date-separator">年</span>
+                                <input type="number" class="form-input date-input" id="edit-join-month" placeholder="1" min="1" max="12">
+                                <span class="date-separator">月</span>
+                                <input type="number" class="form-input date-input" id="edit-join-day" placeholder="1" min="1" max="31">
+                                <span class="date-separator">日</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">週所定労働日数</label>
+                            <input type="number" class="form-input" id="edit-weekly-days" value="0">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">権限</label>
+                            <select class="form-input" id="edit-role">
+                                <option value="管理者">管理者</option>
+                                <option value="スタッフ">スタッフ</option>
+                                <option value="シフト編集者">シフト編集者</option>
+                                <option value="閲覧者">閲覧者</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">タグ <span class="pro-badge">Pro</span></label>
+                            <div class="tag-input-group">
+                                <input type="text" class="form-input" id="edit-tag" placeholder="タグ">
+                                <button type="button" class="btn btn-primary">追加</button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <i class="fas fa-check checkbox-icon"></i>
+                                    シフト表 <span class="pro-badge">Pro</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="edit-apply-all" class="checkbox-input">
+                                <label for="edit-apply-all" class="checkbox-text">変更した内容を所属拠点すべてに反映する</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="edit-footer">
+                    <button type="button" class="btn btn-primary btn-save" onclick="saveStaffEdit()">変更</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="js/staff-edit.js"></script>
+</body>
+</html>
