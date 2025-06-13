@@ -11,6 +11,7 @@ let customRangeEndDate = null;
 let isSelectingRange = false;
 let attendeeOnlyFilter = false;
 let confirmedOnlyFilter = false;
+let filteredStaffData = []; // フィルター適用済みスタッフデータ
 
 // 初期化
 document.addEventListener('DOMContentLoaded', function() {
@@ -72,7 +73,20 @@ function loadStaffData() {
         ];
     }
     
+    updateFilteredStaffData();
     renderStaffList();
+}
+
+// フィルター適用済みスタッフデータを更新
+function updateFilteredStaffData() {
+    filteredStaffData = staffData;
+    
+    // 出勤者のみフィルター
+    if (attendeeOnlyFilter) {
+        filteredStaffData = staffData.filter(staff => hasShiftInDateRange(staff));
+    }
+    
+    console.log('Filtered staff count:', filteredStaffData.length);
 }
 
 // 表示範囲内でシフトがあるかチェック
@@ -107,14 +121,8 @@ function renderStaffList() {
     const staffListElement = document.getElementById('staffList');
     staffListElement.innerHTML = '';
     
-    let filteredStaff = staffData;
-    
-    // 出勤者のみフィルター
-    if (attendeeOnlyFilter) {
-        filteredStaff = staffData.filter(staff => hasShiftInDateRange(staff));
-    }
-    
-    filteredStaff.forEach(staff => {
+    // フィルター済みデータを使用（重複フィルター処理を避ける）
+    filteredStaffData.forEach(staff => {
         const staffRow = document.createElement('div');
         staffRow.className = 'staff-row';
         
@@ -125,6 +133,8 @@ function renderStaffList() {
         `;
         staffListElement.appendChild(staffRow);
     });
+    
+    console.log('Rendered staff list with', filteredStaffData.length, 'staff members');
 }
 
 // カレンダー初期化
@@ -179,6 +189,9 @@ function formatDate(date) {
 
 // カレンダーの描画
 function renderCalendar() {
+    // カレンダー描画前にフィルターデータを更新（期間変更時の同期のため）
+    updateFilteredStaffData();
+    
     const calendarGrid = document.getElementById('calendarGrid');
     calendarGrid.innerHTML = '';
     
@@ -196,6 +209,8 @@ function renderCalendar() {
         const column = createCalendarColumn(date);
         calendarGrid.appendChild(column);
     });
+    
+    console.log('Rendered calendar with', filteredStaffData.length, 'staff members per column');
 }
 
 // 表示する日付の取得
@@ -236,13 +251,8 @@ function createCalendarColumn(date) {
         column.appendChild(summaryCell);
     });
     
-    // フィルター適用済みスタッフのシフトセル
-    let filteredStaff = staffData;
-    if (attendeeOnlyFilter) {
-        filteredStaff = staffData.filter(staff => hasShiftInDateRange(staff));
-    }
-    
-    filteredStaff.forEach(staff => {
+    // フィルター済みスタッフのシフトセル（重複フィルター処理を避ける）
+    filteredStaffData.forEach(staff => {
         const shiftCell = createShiftCell(date, staff);
         column.appendChild(shiftCell);
     });
@@ -461,6 +471,10 @@ window.applyFilters = function applyFilters() {
     attendeeOnlyFilter = document.getElementById('attendeeOnlyFilter').checked;
     confirmedOnlyFilter = document.getElementById('confirmedOnlyFilter').checked;
     
+    console.log('Applying filters - attendeeOnly:', attendeeOnlyFilter);
+    
+    // フィルター変更時にデータを更新
+    updateFilteredStaffData();
     renderStaffList();
     renderCalendar();
     closeFilterModal();
