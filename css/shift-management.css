@@ -183,21 +183,22 @@
 }
 
 .staff-header-spacer {
-    height: 45px;
+    min-height: 55px;
     background: #f8f9fa;
     border-bottom: 1px solid #dee2e6;
     box-sizing: border-box;
+    padding: 12px;
 }
 
 .summary-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 15px;
+    padding: 12px 15px;
     border-bottom: 1px solid #dee2e6;
     font-size: 13px;
     background: #f8f9fa;
-    height: 45px;
+    min-height: 55px;
     box-sizing: border-box;
     font-family: 'Yu Gothic', YuGothic, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
     font-weight: bold;
@@ -269,12 +270,12 @@
 
 .date-header {
     text-align: center;
-    padding: 6px 4px;
+    padding: 12px 4px;
     border-bottom: 1px solid #dee2e6;
     font-size: 13px;
     background: #f8f9fa;
     position: relative;
-    height: 45px;
+    min-height: 55px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -310,13 +311,13 @@
 
 
 .summary-cell {
-    padding: 8px 4px;
+    padding: 12px 4px;
     border-bottom: 1px solid #dee2e6;
     font-size: 13px;
     text-align: center;
     color: #495057;
     background: #f8f9fa;
-    height: 45px;
+    min-height: 55px;
     box-sizing: border-box;
     display: flex;
     align-items: center;
