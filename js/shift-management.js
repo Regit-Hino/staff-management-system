@@ -113,6 +113,8 @@ function hasShiftOnDate(staff, date) {
         return date.getDay() === 2 && date.getDate() === 3; // 6/3 火曜日
     } else if (staff.name === '上原') {
         return date.getDay() === 1 && date.getDate() === 2; // 6/2 月曜日
+    } else if (staff.name === 'Takafumi Hino') {
+        return false; // Takafumi Hinoにはシフトなし
     }
     return false;
 }
@@ -383,6 +385,8 @@ function createShiftCell(date, staff) {
             `;
             cell.appendChild(shiftEntry);
         }
+    } else if (staff.name === 'Takafumi Hino') {
+        // Takafumi Hinoのシフトデータなし（空のセルを維持）
     }
     
     return cell;
