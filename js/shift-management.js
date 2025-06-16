@@ -73,8 +73,9 @@ function loadStaffData() {
         ];
     }
     
-    updateFilteredStaffData();
-    renderStaffList();
+    // フィルターデータ更新とスタッフリスト描画はrenderCalendar内で実行
+    // updateFilteredStaffData();
+    // renderStaffList();
 }
 
 // フィルター適用済みスタッフデータを更新
@@ -209,6 +210,9 @@ function renderCalendar() {
         const column = createCalendarColumn(date);
         calendarGrid.appendChild(column);
     });
+    
+    // カレンダー描画後に同じフィルターデータでスタッフリストを描画（確実な同期のため）
+    renderStaffList();
     
     console.log('Rendered calendar with', filteredStaffData.length, 'staff members per column');
 }
@@ -475,8 +479,7 @@ window.applyFilters = function applyFilters() {
     
     // フィルター変更時にデータを更新
     updateFilteredStaffData();
-    renderStaffList();
-    renderCalendar();
+    renderCalendar(); // renderCalendar内でrenderStaffList()も実行される
     closeFilterModal();
 }
 

@@ -215,7 +215,7 @@
 }
 
 .staff-list {
-    border-bottom: 1px solid #dee2e6;
+    /* border-bottom removed to fix row alignment with calendar columns */
 }
 
 .staff-row {
@@ -226,6 +226,10 @@
     font-size: 13px;
     min-height: 55px;
     justify-content: center;
+}
+
+.staff-row:last-child {
+    border-bottom: none;
 }
 
 .staff-name {
@@ -332,6 +336,10 @@
     padding: 2px;
     position: relative;
     box-sizing: border-box;
+}
+
+.shift-cell:last-child {
+    border-bottom: none;
 }
 
 .shift-entry {
