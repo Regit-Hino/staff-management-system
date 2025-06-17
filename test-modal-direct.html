@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct Modal Test</title>
+    <link rel="stylesheet" href="css/shift-management.css">
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .test-area {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .log {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 3px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>シフトモーダル直接テスト</h1>
+    
+    <div class="test-area">
+        <h2>1. 基本的なモーダル表示テスト</h2>
+        <button onclick="testBasicModal()">基本モーダルを開く</button>
+        <button onclick="testModalWithData()">データ付きモーダルを開く</button>
+        <button onclick="closeModal()">モーダルを閉じる</button>
+    </div>
+    
+    <div class="test-area">
+        <h2>2. シフトセルのシミュレーション</h2>
+        <table style="border-collapse: collapse;">
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 10px;">スタッフ名</td>
+                <td class="test-shift-cell" style="border: 1px solid #ddd; padding: 10px; cursor: pointer; background: #f0f0f0;">
+                    クリックしてテスト
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="test-area">
+        <h2>コンソールログ</h2>
+        <div id="log" class="log"></div>
+    </div>
+    
+    <!-- シフト編集モーダル（簡易版） -->
+    <div id="shiftEditModal" class="modal shift-edit-modal" style="display: none;">
+        <div class="modal-content shift-edit-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="shiftEditTitle">テストモーダル</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="shift-form">
+                    <div class="shift-info">
+                        <div class="shift-status">テスト用モーダル</div>
+                    </div>
+                    <div class="shift-input-section">
+                        <div class="input-row">
+                            <div class="input-group">
+                                <input type="text" id="shiftLabel" class="shift-input" placeholder="レジ">
+                                <span class="input-label">ラベル</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-modal btn-modal-primary" onclick="log('保存ボタンクリック')">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.textContent += `[${timestamp}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+        
+        function testBasicModal() {
+            log('基本モーダルテスト開始');
+            const modal = document.getElementById('shiftEditModal');
+            if (!modal) {
+                log('エラー: モーダル要素が見つかりません');
+                return;
+            }
+            
+            log('モーダル表示前: display=' + modal.style.display);
+            modal.style.display = 'block';
+            log('モーダル表示後: display=' + modal.style.display);
+            
+            setTimeout(() => {
+                modal.classList.add('show');
+                log('showクラス追加完了');
+            }, 10);
+        }
+        
+        function testModalWithData() {
+            log('データ付きモーダルテスト開始');
+            const titleElement = document.getElementById('shiftEditTitle');
+            if (titleElement) {
+                titleElement.textContent = '日野 真文 - 2025年6月16日（月）';
+                log('タイトル設定完了');
+            }
+            
+            testBasicModal();
+        }
+        
+        function closeModal() {
+            log('モーダルクローズ開始');
+            const modal = document.getElementById('shiftEditModal');
+            if (modal) {
+                modal.classList.remove('show');
+                log('showクラス削除');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    log('モーダル非表示完了');
+                }, 300);
+            }
+        }
+        
+        // テストセルのクリックイベント
+        document.addEventListener('DOMContentLoaded', function() {
+            const testCell = document.querySelector('.test-shift-cell');
+            if (testCell) {
+                testCell.addEventListener('click', function() {
+                    log('テストセルクリック');
+                    testModalWithData();
+                });
+                log('テストセルにイベントリスナー設定完了');
+            }
+        });
+        
+        // モーダル背景クリックで閉じる
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('shiftEditModal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        log('モーダル背景クリック');
+                        closeModal();
+                    }
+                });
+            }
+        });
+        
+        log('ページ読み込み完了');
+    </script>
+</body>
+</html>

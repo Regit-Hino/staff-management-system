@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shift Modal Diagnostic</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            line-height: 1.8;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f5f5f5;
+        }
+        .result {
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 3px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        code {
+            background: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        button {
+            padding: 8px 15px;
+            margin: 5px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .test-result {
+            margin-top: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>シフトモーダル診断テスト</h1>
+    
+    <div class="test-section">
+        <h2>1. DOM要素確認</h2>
+        <button onclick="checkDOMElements()">DOM要素をチェック</button>
+        <div id="domResults" class="test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. イベントリスナー確認</h2>
+        <button onclick="checkEventListeners()">イベントリスナーをチェック</button>
+        <div id="eventResults" class="test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. シフトモーダル動作テスト</h2>
+        <button onclick="testShiftModal()">モーダルを開く（テスト）</button>
+        <div id="modalResults" class="test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. ローカルストレージ確認</h2>
+        <button onclick="checkLocalStorage()">ストレージをチェック</button>
+        <div id="storageResults" class="test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>5. 関数の存在確認</h2>
+        <button onclick="checkFunctions()">関数をチェック</button>
+        <div id="functionResults" class="test-result"></div>
+    </div>
+
+    <script>
+        function addResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : 'warning';
+            element.innerHTML += `<div class="result ${className}">${message}</div>`;
+        }
+
+        function checkDOMElements() {
+            const results = document.getElementById('domResults');
+            results.innerHTML = '';
+            
+            // Check for shift modal elements
+            const modalElements = [
+                { id: 'shiftEditModal', desc: 'シフト編集モーダル' },
+                { id: 'shiftEditTitle', desc: 'モーダルタイトル' },
+                { id: 'shiftLabel', desc: 'ラベル入力' },
+                { id: 'shiftStartTime', desc: '開始時刻入力' },
+                { id: 'shiftEndTime', desc: '終了時刻入力' },
+                { id: 'shiftBreakTime', desc: '休憩時間入力' },
+                { id: 'shiftConfirmed', desc: '確定チェックボックス' },
+                { id: 'weeklyRepeat', desc: '毎週リピートチェックボックス' }
+            ];
+            
+            modalElements.forEach(elem => {
+                const element = parent.document.getElementById(elem.id);
+                if (element) {
+                    addResult('domResults', `✓ ${elem.desc} (${elem.id}) が見つかりました`, 'success');
+                } else {
+                    addResult('domResults', `✗ ${elem.desc} (${elem.id}) が見つかりません`, 'error');
+                }
+            });
+            
+            // Check for shift cells
+            const shiftCells = parent.document.querySelectorAll('.shift-cell');
+            if (shiftCells.length > 0) {
+                addResult('domResults', `✓ ${shiftCells.length}個のシフトセルが見つかりました`, 'success');
+            } else {
+                addResult('domResults', '✗ シフトセルが見つかりません', 'error');
+            }
+        }
+
+        function checkEventListeners() {
+            const results = document.getElementById('eventResults');
+            results.innerHTML = '';
+            
+            try {
+                // Check if shift cells have click events
+                const shiftCells = parent.document.querySelectorAll('.shift-cell');
+                if (shiftCells.length > 0) {
+                    addResult('eventResults', `${shiftCells.length}個のシフトセルが見つかりました`, 'success');
+                    
+                    // Test clicking first cell
+                    const firstCell = shiftCells[0];
+                    const hasListener = firstCell.onclick !== null || firstCell.addEventListener;
+                    
+                    // Try to get event listeners (this might not work in all browsers)
+                    if (typeof getEventListeners !== 'undefined' && getEventListeners(firstCell).click) {
+                        addResult('eventResults', '✓ シフトセルにクリックイベントが設定されています', 'success');
+                    } else {
+                        addResult('eventResults', '⚠ シフトセルのイベントリスナーを直接確認できません', 'warning');
+                    }
+                } else {
+                    addResult('eventResults', '✗ シフトセルが見つかりません', 'error');
+                }
+                
+                // Check modal close button
+                const closeBtn = parent.document.querySelector('#shiftEditModal .modal-close');
+                if (closeBtn) {
+                    addResult('eventResults', '✓ モーダル閉じるボタンが見つかりました', 'success');
+                }
+                
+            } catch (error) {
+                addResult('eventResults', `エラー: ${error.message}`, 'error');
+            }
+        }
+
+        function testShiftModal() {
+            const results = document.getElementById('modalResults');
+            results.innerHTML = '';
+            
+            try {
+                // Find and click a shift cell
+                const shiftCells = parent.document.querySelectorAll('.shift-cell');
+                if (shiftCells.length > 0) {
+                    addResult('modalResults', 'シフトセルをクリックします...', 'info');
+                    
+                    // Simulate click on first cell
+                    const firstCell = shiftCells[0];
+                    const clickEvent = new MouseEvent('click', {
+                        bubbles: true,
+                        cancelable: true,
+                        view: parent.window
+                    });
+                    firstCell.dispatchEvent(clickEvent);
+                    
+                    // Check if modal opened
+                    setTimeout(() => {
+                        const modal = parent.document.getElementById('shiftEditModal');
+                        if (modal && modal.style.display !== 'none') {
+                            addResult('modalResults', '✓ モーダルが正常に開きました！', 'success');
+                            
+                            // Check modal content
+                            const title = parent.document.getElementById('shiftEditTitle');
+                            if (title) {
+                                addResult('modalResults', `モーダルタイトル: ${title.textContent}`, 'success');
+                            }
+                        } else {
+                            addResult('modalResults', '✗ モーダルが開きませんでした', 'error');
+                            addResult('modalResults', 'コンソールエラーを確認してください', 'warning');
+                        }
+                    }, 100);
+                } else {
+                    addResult('modalResults', '✗ テスト用のシフトセルが見つかりません', 'error');
+                }
+            } catch (error) {
+                addResult('modalResults', `エラー: ${error.message}`, 'error');
+            }
+        }
+
+        function checkLocalStorage() {
+            const results = document.getElementById('storageResults');
+            results.innerHTML = '';
+            
+            try {
+                const staffData = localStorage.getItem('staffManagementData');
+                const shiftData = localStorage.getItem('shiftScheduleData');
+                
+                if (staffData) {
+                    const staff = JSON.parse(staffData);
+                    addResult('storageResults', `✓ スタッフデータ: ${staff.length}名`, 'success');
+                } else {
+                    addResult('storageResults', '⚠ スタッフデータが見つかりません', 'warning');
+                }
+                
+                if (shiftData) {
+                    const shifts = JSON.parse(shiftData);
+                    const staffCount = Object.keys(shifts).length;
+                    addResult('storageResults', `✓ シフトデータ: ${staffCount}名分`, 'success');
+                } else {
+                    addResult('storageResults', '⚠ シフトデータが見つかりません', 'warning');
+                }
+            } catch (error) {
+                addResult('storageResults', `エラー: ${error.message}`, 'error');
+            }
+        }
+
+        function checkFunctions() {
+            const results = document.getElementById('functionResults');
+            results.innerHTML = '';
+            
+            const functions = [
+                'openShiftEditModal',
+                'closeShiftEditModal',
+                'saveShift',
+                'deleteShift',
+                'resetShiftForm',
+                'loadShiftData',
+                'getShiftData',
+                'updateColorSelection',
+                'applyQuickRegister'
+            ];
+            
+            functions.forEach(funcName => {
+                if (typeof parent.window[funcName] === 'function') {
+                    addResult('functionResults', `✓ ${funcName} 関数が存在します`, 'success');
+                } else {
+                    addResult('functionResults', `✗ ${funcName} 関数が見つかりません`, 'error');
+                }
+            });
+        }
+
+        // Auto-run basic check on load
+        window.onload = function() {
+            // Check if we're in an iframe or direct access
+            if (window.parent !== window) {
+                addResult('domResults', 'iframe内で実行中です', 'info');
+            } else {
+                addResult('domResults', '注意: shift-management.htmlを別タブで開いてからテストしてください', 'warning');
+            }
+        };
+    </script>
+</body>
+</html>

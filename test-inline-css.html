@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>インラインCSS左メニューテスト</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* 共通レイアウトCSS - インライン版 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            font-size: 14px;
+        }
+
+        /* ヘッダー */
+        .header {
+            background: white;
+            border-bottom: 1px solid #dee2e6;
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 52px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .company-select {
+            border: 1px solid #ced4da;
+            border-radius: 3px;
+            padding: 4px 8px;
+            font-size: 13px;
+            background: white;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .notification-icon {
+            color: #6c757d;
+            cursor: pointer;
+        }
+
+        .user-name {
+            color: #495057;
+            font-size: 13px;
+        }
+
+        /* コンテナ */
+        .container {
+            display: flex;
+            min-height: calc(100vh - 52px);
+        }
+
+        /* サイドバー - 完全統一版 */
+        .sidebar {
+            width: 180px;
+            background: white;
+            border-right: 1px solid #dee2e6;
+            padding: 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            color: #495057;
+            text-decoration: none;
+            border-left: 3px solid transparent;
+            font-size: 13px;
+            transition: background-color 0.15s ease;
+        }
+
+        .nav-item:hover {
+            background: #f8f9fa;
+            color: #495057;
+        }
+
+        .nav-item.active {
+            background: #e9ecef;
+            color: #495057;
+            border-left-color: #007bff;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            margin-right: 8px;
+            width: 16px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .upgrade-btn {
+            margin: 12px;
+            padding: 8px 16px;
+            background: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            text-align: center;
+            display: block;
+            width: calc(100% - 24px);
+        }
+
+        /* メインコンテンツ */
+        .main-content {
+            flex: 1;
+            padding: 16px 20px;
+            background: #f8f9fa;
+        }
+
+        .content-box {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .comparison {
+            display: flex;
+            gap: 40px;
+        }
+
+        .column {
+            flex: 1;
+        }
+
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <select class="company-select">
+                <option>会社</option>
+            </select>
+            <div class="logo">シフト番長</div>
+        </div>
+        <div class="header-right">
+            <i class="fas fa-bell notification-icon"></i>
+            <span class="user-name">日野</span>
+        </div>
+    </div>
+    
+    <div class="container">
+        <nav class="sidebar">
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-chart-bar"></i>
+                グラフ
+            </a>
+            <a href="#" class="nav-item active">
+                <i class="nav-icon fas fa-users"></i>
+                スタッフ管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-calendar-alt"></i>
+                シフト管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-briefcase"></i>
+                業務管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-clock"></i>
+                勤怠管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-umbrella-beach"></i>
+                有休管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-clipboard-list"></i>
+                各種申請/承認
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-globe"></i>
+                社員ページ
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-stopwatch"></i>
+                計画管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-bullhorn"></i>
+                メガホン
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-cog"></i>
+                設定
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-qrcode"></i>
+                打刻用QRコード
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-file-upload"></i>
+                シフト提出
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-id-card"></i>
+                タイムカード
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-clipboard"></i>
+                掲示板
+            </a>
+            <button class="upgrade-btn">アップグレード</button>
+        </nav>
+        
+        <main class="main-content">
+            <h1>左メニューのインラインCSSテスト</h1>
+            
+            <div class="content-box">
+                <h2>テスト結果</h2>
+                <p>このページはcommon-layout.cssのスタイルをインラインで記述しています。</p>
+                <p>左メニューが正しく表示されている場合、CSS読み込みの問題である可能性があります。</p>
+                
+                <div class="status success">
+                    ✓ インラインCSSが適用されています
+                </div>
+            </div>
+            
+            <div class="content-box">
+                <h2>比較チェックリスト</h2>
+                <div class="comparison">
+                    <div class="column">
+                        <h3>期待される表示</h3>
+                        <ul>
+                            <li>サイドバー幅: 180px</li>
+                            <li>背景色: 白</li>
+                            <li>右ボーダー: 1px solid #dee2e6</li>
+                            <li>ナビアイテムパディング: 8px 16px</li>
+                            <li>フォントサイズ: 13px</li>
+                            <li>アップグレードボタンマージン: 12px</li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h3>デバッグ手順</h3>
+                        <ol>
+                            <li>このページと他のページを比較</li>
+                            <li>開発者ツールでCSS適用状況を確認</li>
+                            <li>キャッシュをクリアして再読み込み</li>
+                            <li>別のブラウザで確認</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-box">
+                <h2>次のステップ</h2>
+                <p>もしこのページで左メニューが正しく表示されている場合：</p>
+                <ol>
+                    <li>ブラウザのキャッシュをクリア（Cmd+Shift+R）</li>
+                    <li>シークレットモードで確認</li>
+                    <li>common-layout.cssの読み込み順序を確認</li>
+                </ol>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

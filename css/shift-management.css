@@ -1,4 +1,34 @@
-/* シフト管理画面専用CSS */
+/* シフト管理画面専用CSS - 参考画像に完全一致 */
+/* 注意: common-layout.cssから共通レイアウトを継承 */
+
+/* レスポンシブ無効化 - 左サイドバー固定幅維持 */
+body .container {
+    display: flex !important;
+    min-height: calc(100vh - 52px) !important;
+    flex-direction: row !important; /* 強制的に横並び */
+}
+
+body .container .sidebar {
+    width: 180px !important;
+    min-width: 180px !important;
+    max-width: 180px !important;
+    flex-shrink: 0 !important; /* 縮小防止 */
+    background: white !important;
+    border-right: 1px solid #dee2e6 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+}
+
+/* メインコンテンツ - スクロール対応 */
+.main-content {
+    flex: 1;
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    overflow-x: auto; /* 横スクロール有効 */
+    overflow-y: auto; /* 縦スクロール有効 */
+    max-width: calc(100vw - 180px); /* サイドバー分を除く */
+}
 
 /* タブナビゲーション */
 .tab-navigation {
@@ -38,14 +68,6 @@
     font-size: 10px;
     font-weight: normal;
     margin-left: 6px;
-}
-
-.pro-badge-green {
-    background: #28a745;
-}
-
-.pro-badge-beta {
-    background: #dc3545;
 }
 
 /* カレンダーヘッダー */
@@ -130,266 +152,213 @@
     background: #f8f9fa;
 }
 
-/* シフトカレンダー */
-.shift-calendar {
+/* シフト表コンテナ - 完全スクロール対応 */
+.shift-table-container {
+    flex: 1;
+    overflow-x: auto; /* 横スクロール */
+    overflow-y: auto; /* 縦スクロールも有効 */
     background: white;
     border: 1px solid #dee2e6;
-    height: calc(100vh - 300px);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    margin: 0 20px 20px;
+    border-radius: 4px;
+    min-height: 0; /* flexbox でのスクロール確実化 */
+    max-height: calc(100vh - 280px); /* 高さを少し拡張 */
+    padding: 8px; /* 内部パディングで余裕を追加 */
 }
 
-.calendar-wrapper {
-    display: flex;
-    overflow-x: auto;
-    overflow-y: hidden;
-    flex: 1;
-    width: 100%;
-    max-width: calc(100vw - 250px - 40px);
-}
-
-.calendar-wrapper::-webkit-scrollbar {
-    height: 12px;
-}
-
-.calendar-wrapper::-webkit-scrollbar-track {
-    background: #f8f9fa;
-    border-radius: 6px;
-}
-
-.calendar-wrapper::-webkit-scrollbar-thumb {
-    background: #ced4da;
-    border-radius: 6px;
-}
-
-.calendar-wrapper::-webkit-scrollbar-thumb:hover {
-    background: #adb5bd;
-}
-
-.calendar-table {
-    display: flex;
-    min-width: 100%;
-}
-
-.staff-column {
-    min-width: 250px;
-    width: 250px;
-    border-right: 1px solid #dee2e6;
-    background: #fafafa;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-}
-
-.staff-header-spacer {
-    min-height: 55px;
-    background: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
-    box-sizing: border-box;
-    padding: 12px;
-}
-
-.summary-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 15px;
-    border-bottom: 1px solid #dee2e6;
-    font-size: 13px;
-    background: #f8f9fa;
-    min-height: 55px;
-    box-sizing: border-box;
-    font-family: 'Yu Gothic', YuGothic, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
-    font-weight: bold;
-}
-
-.summary-label {
-    color: #495057;
-    font-weight: bold;
-}
-
-.summary-icon {
-    color: #6c757d;
-    font-size: 11px;
-}
-
-.staff-list {
-    /* border-bottom removed to fix row alignment with calendar columns */
-}
-
-.staff-row {
-    display: flex;
-    flex-direction: column;
-    padding: 12px 15px;
-    border-bottom: 1px solid #e9ecef;
-    font-size: 13px;
-    min-height: 55px;
-    justify-content: center;
-}
-
-.staff-row:last-child {
-    border-bottom: none;
-}
-
-.staff-name {
-    font-weight: 500;
-    color: #495057;
-    margin-bottom: 2px;
-}
-
-.staff-name.admin {
-    color: #17a2b8;
-}
-
-.staff-info {
-    color: #6c757d;
-    font-size: 11px;
-}
-
-/* カレンダーグリッド */
-.calendar-grid {
-    display: flex;
-    flex-shrink: 0;
-}
-
-.calendar-column {
-    min-width: 110px;
-    width: 110px;
-    border-right: 1px solid #dee2e6;
-    flex-shrink: 0;
-}
-
-/* 日表示時の拡大 */
-.calendar-grid.day-view .calendar-column {
-    min-width: 400px;
-    width: 400px;
-}
-
-/* 週表示時の拡大 */
-.calendar-grid.week-view .calendar-column {
-    min-width: 140px;
-    width: 140px;
-}
-
-.date-header {
-    text-align: center;
-    padding: 12px 4px;
-    border-bottom: 1px solid #dee2e6;
-    font-size: 13px;
-    background: #f8f9fa;
-    position: relative;
-    min-height: 55px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    font-family: 'Yu Gothic', YuGothic, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
-    font-weight: bold;
-}
-
-.date-day {
-    font-weight: bold;
-    color: #495057;
-    margin-bottom: 1px;
+/* シフト表 - 参考画像完全再現 */
+.shift-table {
+    width: auto;
+    border-collapse: collapse;
+    table-layout: fixed; /* 固定レイアウトで統一幅 */
+    background: white;
     font-size: 12px;
 }
 
-.date-number {
-    color: #495057;
-    font-size: 13px;
-    font-weight: bold;
+/* 月表示時のテーブル最小幅 */
+.month-view .shift-table {
+    min-width: calc(120px + 95px * 31); /* スタッフ名列 + 最大31日分 */
 }
 
-.date-today {
+/* デフォルトのテーブル最小幅 */
+.shift-table {
+    min-width: calc(120px + 95px * 31);
+}
+
+/* 列ずれ防止：統一されたボーダーとパディング - 余裕を追加 */
+.shift-table th,
+.shift-table td {
+    border: 1px solid #e0e0e0;
+    vertical-align: top;
+    padding: 8px 6px; /* パディングを増やして余裕を追加 */
+    margin: 0;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* 左端のスタッフ名列 - 通常表示 */
+.shift-table .staff-name-column {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+    background: #f8f9fa;
+    padding: 6px 8px;
+    text-align: left;
+    border-right: 1px solid #e0e0e0;
+}
+
+/* スタッフ名セル - 通常表示 */
+.shift-table .staff-name-cell {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+    text-align: left;
+    padding: 6px 8px;
+    font-weight: 500;
+    background: #f8f9fa;
+    border-right: 1px solid #e0e0e0;
+}
+
+/* サマリーラベル - 通常表示 */
+.shift-table .summary-label {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+    background: #f8f9fa;
+    text-align: left;
+    padding: 6px 8px;
+    font-weight: bold;
+    border-right: 1px solid #e0e0e0;
+}
+
+/* 日付列 - 表示タイプ別幅調整・統一パディング */
+.shift-table .date-column {
+    padding: 6px 4px; /* 統一されたパディング */
+    font-weight: bold;
+    color: #333;
+}
+
+/* 日表示時の列幅 */
+.day-view .shift-table .date-column {
+    width: 200px;
+    min-width: 200px;
+}
+
+/* 週表示時の列幅 */
+.week-view .shift-table .date-column {
+    width: 100px;
+    min-width: 100px;
+}
+
+/* 月表示時の列幅 - レジ打ちセル基準で統一 */
+.month-view .shift-table .date-column,
+.shift-table .date-column {
+    width: 95px;
+    min-width: 95px;
+    max-width: 95px;
+}
+
+/* 曜日の色分け */
+.shift-table .date-column.sunday {
+    color: #dc3545;
+    background: #fff5f5;
+}
+
+.shift-table .date-column.saturday {
+    color: #007bff;
+    background: #f0f8ff;
+}
+
+.shift-table .date-column.weekday {
+    color: #333;
+    background: white;
+}
+
+/* 今日の日付 - 列全体をハイライト */
+.shift-table .date-column.today {
     background: #fff3cd !important;
     border: 2px solid #ffc107 !important;
-    border-radius: 4px;
 }
 
-.date-today .date-day,
-.date-today .date-number {
-    color: #856404 !important;
-    font-weight: bold;
+/* 今日の日付の列全体（スタッフセルも含む） */
+.shift-table .today-column {
+    background: #fff3cd !important;
+    border-left: 2px solid #ffc107 !important;
+    border-right: 2px solid #ffc107 !important;
 }
 
+/* 今日の日付の列の最初と最後のセル */
+.shift-table .today-column.first-row {
+    border-top: 2px solid #ffc107 !important;
+}
 
-.summary-cell {
-    padding: 12px 4px;
-    border-bottom: 1px solid #dee2e6;
-    font-size: 13px;
-    text-align: center;
-    color: #495057;
+.shift-table .today-column.last-row {
+    border-bottom: 2px solid #ffc107 !important;
+}
+
+/* ヘッダー行 - 統一パディング */
+.shift-table .header-row th {
     background: #f8f9fa;
-    min-height: 55px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Yu Gothic', YuGothic, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
+    font-weight: bold;
+    padding: 6px 4px; /* 統一されたパディング */
+    height: 40px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* サマリー行 - 統一パディング */
+.shift-table .summary-row td {
+    background: #f0f0f0;
+    padding: 6px 4px; /* 統一されたパディング */
+    height: 30px;
+    font-size: 11px;
     font-weight: bold;
 }
 
-.shift-cell {
-    min-height: 55px;
-    border-bottom: 1px solid #e9ecef;
-    padding: 2px;
+/* summary-labelは上で定義済み */
+
+/* スタッフ行 - 統一パディング */
+.shift-table .staff-row td {
+    height: 45px;
+    padding: 6px 4px; /* 統一されたパディング */
+    vertical-align: middle;
+}
+
+.shift-table .staff-name-cell.admin {
+    color: #17a2b8;
+}
+
+/* シフトセル */
+.shift-table .shift-cell {
     position: relative;
-    box-sizing: border-box;
+    min-height: 45px;
+    padding: 2px;
+    white-space: nowrap;
 }
 
-.shift-cell:last-child {
-    border-bottom: none;
+/* 月表示時のシフトセル幅統一 */
+.month-view .shift-table .shift-cell,
+.shift-table .shift-cell {
+    width: 95px;
+    min-width: 95px;
+    max-width: 95px;
 }
 
-.shift-entry {
+.shift-table .shift-entry {
     background: white;
     border: 1px solid #007bff;
-    border-radius: 2px;
-    padding: 2px 4px;
-    margin: 1px 0;
-    font-size: 10px;
+    border-radius: 3px;
+    padding: 3px 4px;
+    font-size: 11px;
     color: #007bff;
-    cursor: pointer;
     line-height: 1.2;
-    text-align: center;
-}
-
-.shift-time {
+    margin: 1px;
+    font-weight: 500;
     display: block;
-    font-weight: normal;
-}
-
-.shift-break {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    background: #4caf50;
-    border-radius: 50%;
-    margin: 2px auto;
-}
-
-/* 休日・土日の背景色 */
-.weekend .date-header {
-    background: #fff9e6;
-}
-
-.weekend .summary-cell {
-    background: #fff9e6;
-}
-
-.sunday .date-day,
-.sunday .date-number {
-    color: #dc3545;
-}
-
-.saturday .date-day,
-.saturday .date-number {
-    color: #007bff;
-}
-
-.holiday {
-    background: #ffebee;
+    width: 85px; /* セル幅95pxに対して余裕を持った幅 */
+    max-width: 85px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* ボトムツールバー */
@@ -726,32 +695,313 @@
     background: #f8f9fa;
 }
 
-/* レスポンシブ対応 */
+/* シフト編集モーダル */
+.shift-edit-modal {
+    z-index: 1002;
+}
+
+.shift-edit-content {
+    width: 500px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.shift-edit-content .modal-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 16px 20px;
+}
+
+.shift-edit-content .modal-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #495057;
+    margin: 0;
+}
+
+.shift-form {
+    padding: 20px;
+}
+
+/* 業務情報表示 */
+.shift-info {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.shift-status {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+/* シフト入力セクション */
+.shift-input-section {
+    margin-bottom: 20px;
+}
+
+.input-row {
+    margin-bottom: 12px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.shift-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    background: white;
+    min-width: 0;
+}
+
+.shift-input:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
+.time-input {
+    max-width: 100px;
+    text-align: center;
+}
+
+.input-label {
+    min-width: 60px;
+    font-size: 14px;
+    color: #495057;
+    text-align: right;
+}
+
+/* カラー選択 */
+.color-selection {
+    margin-bottom: 20px;
+}
+
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.color-option {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    border: 2px solid #dee2e6;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.color-option:hover {
+    border-color: #80bdff;
+    transform: scale(1.05);
+}
+
+.color-option.selected {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
+.color-option.selected::after {
+    content: '✓';
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+}
+
+.none-option {
+    background: white;
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.none-option.selected::after {
+    color: #007bff;
+    text-shadow: none;
+}
+
+/* 簡易登録 */
+.quick-register {
+    margin-bottom: 20px;
+}
+
+.quick-register-label {
+    font-size: 14px;
+    color: #495057;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.quick-register-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.quick-btn {
+    padding: 8px 16px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background: white;
+    color: #495057;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 60px;
+}
+
+.quick-btn:hover {
+    background: #f8f9fa;
+    border-color: #adb5bd;
+}
+
+.quick-btn.selected {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+/* オプション */
+.shift-options {
+    margin-bottom: 20px;
+}
+
+.option-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.option-checkbox {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+}
+
+.option-label {
+    font-size: 14px;
+    color: #495057;
+    margin: 0;
+    flex: 1;
+}
+
+.help-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid #ced4da;
+    background: white;
+    color: #6c757d;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.help-btn:hover {
+    background: #f8f9fa;
+}
+
+/* モーダルアクション */
+.shift-edit-content .modal-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-top: 1px solid #dee2e6;
+    background: #f8f9fa;
+}
+
+.delete-btn {
+    background: none;
+    border: none;
+    color: #dc3545;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.delete-btn:hover {
+    background: #f8d7da;
+}
+
+/* 横スクロール対応 */
+.shift-table-container::-webkit-scrollbar {
+    height: 12px;
+}
+
+.shift-table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.shift-table-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 6px;
+}
+
+.shift-table-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* レスポンシブ完全無効化 - デスクトップレイアウト固定 */
 @media (max-width: 768px) {
+    /* サイドバーは常に固定幅 */
+    body .container {
+        display: flex !important;
+        flex-direction: row !important;
+    }
+    
+    body .container .sidebar {
+        width: 180px !important;
+        min-width: 180px !important;
+        flex-shrink: 0 !important;
+    }
+    
+    /* メインコンテンツは横スクロール */
+    .main-content {
+        overflow-x: auto !important;
+        min-width: 0 !important;
+    }
+    
     .calendar-header {
-        flex-direction: column;
-        gap: 10px;
-        align-items: stretch;
+        min-width: 800px; /* 最小幅確保 */
+        flex-wrap: nowrap !important;
     }
     
     .calendar-navigation {
-        justify-content: center;
+        flex-wrap: nowrap !important;
     }
     
     .calendar-controls {
-        justify-content: center;
+        flex-wrap: nowrap !important;
     }
     
     .bottom-toolbar {
-        flex-wrap: wrap;
-        gap: 5px;
+        min-width: 800px; /* 最小幅確保 */
+        flex-wrap: nowrap !important;
     }
     
-    .toolbar-btn {
-        padding: 6px 8px;
-        font-size: 12px;
-    }
-    
+    /* カスタムモーダルのみレスポンシブ */
     .custom-range-content {
         width: 95vw;
         margin: 10px;
@@ -761,4 +1011,42 @@
         flex-direction: column;
         gap: 20px;
     }
+    
+    /* テーブル列幅は固定維持 */
+    .shift-table .staff-name-column {
+        width: 120px;
+        min-width: 120px;
+    }
+    
+    .shift-table .date-column {
+        width: 50px;
+        min-width: 50px;
+    }
+}
+
+/* モーダルアニメーション */
+.modal {
+    transition: opacity 0.3s ease;
+}
+
+.modal.show {
+    opacity: 1 !important;
+}
+
+.modal-content {
+    transform: translate(-50%, -50%) scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.modal.show .modal-content {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* シフトセルのカーソル */
+.shift-cell {
+    cursor: pointer;
+}
+
+.shift-cell:hover {
+    background-color: #f0f8ff;
 }

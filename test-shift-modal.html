@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shift Modal Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .data-display {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 3px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .log {
+            background-color: #e9ecef;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 3px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            background-color: white;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>シフトモーダル機能テスト</h1>
+    
+    <div class="section">
+        <h2>1. ローカルストレージデータ確認</h2>
+        <button onclick="checkLocalStorage()">ローカルストレージを確認</button>
+        <div id="localStorageData" class="data-display"></div>
+    </div>
+    
+    <div class="section">
+        <h2>2. テストデータ作成</h2>
+        <button onclick="createTestData()">テストスタッフデータを作成</button>
+        <button onclick="createTestShifts()">テストシフトデータを作成</button>
+        <div id="testDataResult" class="data-display"></div>
+    </div>
+    
+    <div class="section">
+        <h2>3. シフト管理画面テスト</h2>
+        <button onclick="openShiftManagement()">シフト管理画面を開く</button>
+        <p>手動テストチェックリスト：</p>
+        <ul>
+            <li>カレンダーセルをクリックしてモーダルが開くか</li>
+            <li>スタッフ名と日付が正しく表示されるか</li>
+            <li>シフトデータの入力と保存が機能するか</li>
+            <li>簡易登録ボタン（○、×、有休など）が動作するか</li>
+            <li>カラー選択が機能するか</li>
+            <li>保存後、カレンダーに反映されるか</li>
+            <li>ページリロード後もデータが保持されるか</li>
+        </ul>
+    </div>
+    
+    <div class="section">
+        <h2>4. コンソールログ</h2>
+        <button onclick="clearLog()">ログクリア</button>
+        <div id="consoleLog" class="log"></div>
+    </div>
+    
+    <script>
+        // コンソールログをキャプチャ
+        const logDiv = document.getElementById('consoleLog');
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addLogEntry('LOG', args.join(' '));
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addLogEntry('ERROR', args.join(' '), 'error');
+        };
+        
+        function addLogEntry(type, message, className = '') {
+            const entry = document.createElement('div');
+            entry.className = 'log-entry ' + className;
+            entry.textContent = `[${type}] ${new Date().toLocaleTimeString()}: ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function clearLog() {
+            logDiv.innerHTML = '';
+        }
+        
+        function checkLocalStorage() {
+            const resultDiv = document.getElementById('localStorageData');
+            let html = '';
+            
+            // スタッフデータ
+            const staffData = localStorage.getItem('staffManagementData');
+            html += '<h3>staffManagementData:</h3>';
+            html += staffData ? JSON.stringify(JSON.parse(staffData), null, 2) : 'データなし';
+            
+            // シフトデータ
+            const shiftData = localStorage.getItem('shiftScheduleData');
+            html += '\n\n<h3>shiftScheduleData:</h3>';
+            html += shiftData ? JSON.stringify(JSON.parse(shiftData), null, 2) : 'データなし';
+            
+            resultDiv.textContent = html;
+            console.log('ローカルストレージ確認完了');
+        }
+        
+        function createTestData() {
+            const testStaff = [
+                {
+                    id: '1',
+                    name: '日野 真文',
+                    furigana: 'ひの まさふみ',
+                    email: 'hino@example.com',
+                    phone: '090-1234-5678',
+                    role: '管理者',
+                    isTemp: false,
+                    employeeId: 'E001',
+                    hourlyWage: '1500',
+                    transport: '500',
+                    maxMonthly: '160',
+                    memo: 'テストメモ'
+                },
+                {
+                    id: '2',
+                    name: 'Regit 高木',
+                    furigana: 'れじっと たかぎ',
+                    email: 'takagi@example.com',
+                    phone: '090-2345-6789',
+                    role: 'スタッフ',
+                    isTemp: false,
+                    employeeId: 'E002',
+                    hourlyWage: '1200',
+                    transport: '300'
+                },
+                {
+                    id: '3',
+                    name: 'タロウ',
+                    furigana: 'たろう',
+                    email: 'taro@example.com',
+                    phone: '090-3456-7890',
+                    role: 'スタッフ',
+                    isTemp: false,
+                    employeeId: 'E003',
+                    hourlyWage: '1100',
+                    transport: '400'
+                }
+            ];
+            
+            localStorage.setItem('staffManagementData', JSON.stringify(testStaff));
+            
+            const resultDiv = document.getElementById('testDataResult');
+            resultDiv.textContent = 'テストスタッフデータを作成しました:\n' + JSON.stringify(testStaff, null, 2);
+            console.log('テストスタッフデータ作成完了');
+        }
+        
+        function createTestShifts() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth() + 1;
+            const date = today.getDate();
+            
+            const testShifts = {
+                '日野 真文': {
+                    [`${year}-${month}-${date}`]: {
+                        label: 'レジ',
+                        startTime: '10:00',
+                        endTime: '19:00',
+                        breakTime: '1:00',
+                        color: '#64b5f6',
+                        confirmed: true
+                    },
+                    [`${year}-${month}-${date + 1}`]: {
+                        quickType: 'paid-leave',
+                        label: '有休',
+                        color: '#4caf50'
+                    }
+                },
+                'Regit 高木': {
+                    [`${year}-${month}-${date}`]: {
+                        label: 'キッチン',
+                        startTime: '09:00',
+                        endTime: '17:00',
+                        breakTime: '1:00',
+                        color: '#e91e63',
+                        confirmed: false
+                    }
+                }
+            };
+            
+            localStorage.setItem('shiftScheduleData', JSON.stringify(testShifts));
+            
+            const resultDiv = document.getElementById('testDataResult');
+            resultDiv.textContent = 'テストシフトデータを作成しました:\n' + JSON.stringify(testShifts, null, 2);
+            console.log('テストシフトデータ作成完了');
+        }
+        
+        function openShiftManagement() {
+            window.open('shift-management.html', '_blank');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>サイドバー比較テスト</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .container {
+            display: flex;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .page-section {
+            flex: 1;
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .frame-container {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .debug-info {
+            margin-top: 20px;
+            padding: 10px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: monospace;
+        }
+        .debug-info h3 {
+            margin-top: 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; margin-bottom: 40px;">左メニュー比較テスト</h1>
+    
+    <div class="container">
+        <div class="page-section">
+            <div class="page-title">スタッフ管理（index.html）</div>
+            <div class="frame-container">
+                <iframe src="index.html" id="staff-frame"></iframe>
+            </div>
+            <div class="debug-info" id="staff-debug">
+                <h3>デバッグ情報</h3>
+                <p>読み込み中...</p>
+            </div>
+        </div>
+        
+        <div class="page-section">
+            <div class="page-title">シフト管理（shift-management.html）</div>
+            <div class="frame-container">
+                <iframe src="shift-management.html" id="shift-frame"></iframe>
+            </div>
+            <div class="debug-info" id="shift-debug">
+                <h3>デバッグ情報</h3>
+                <p>読み込み中...</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function checkStyles(frameId, debugId) {
+            const frame = document.getElementById(frameId);
+            const debug = document.getElementById(debugId);
+            
+            frame.onload = function() {
+                try {
+                    const doc = frame.contentDocument || frame.contentWindow.document;
+                    const sidebar = doc.querySelector('.sidebar');
+                    const navItems = doc.querySelectorAll('.nav-item');
+                    const upgradeBtn = doc.querySelector('.upgrade-btn');
+                    
+                    let debugInfo = '<h3>デバッグ情報</h3>';
+                    
+                    // CSS読み込み確認
+                    const links = doc.querySelectorAll('link[rel="stylesheet"]');
+                    debugInfo += '<p><strong>CSS読み込み:</strong></p><ul>';
+                    links.forEach(link => {
+                        debugInfo += `<li>${link.href}</li>`;
+                    });
+                    debugInfo += '</ul>';
+                    
+                    // サイドバーのスタイル
+                    if (sidebar) {
+                        const sidebarStyles = window.getComputedStyle(sidebar);
+                        debugInfo += '<p><strong>サイドバースタイル:</strong></p><ul>';
+                        debugInfo += `<li>幅: ${sidebarStyles.width}</li>`;
+                        debugInfo += `<li>背景色: ${sidebarStyles.backgroundColor}</li>`;
+                        debugInfo += `<li>パディング: ${sidebarStyles.padding}</li>`;
+                        debugInfo += '</ul>';
+                    }
+                    
+                    // nav-itemのスタイル
+                    if (navItems.length > 0) {
+                        const navStyles = window.getComputedStyle(navItems[0]);
+                        debugInfo += '<p><strong>ナビアイテムスタイル:</strong></p><ul>';
+                        debugInfo += `<li>パディング: ${navStyles.padding}</li>`;
+                        debugInfo += `<li>フォントサイズ: ${navStyles.fontSize}</li>`;
+                        debugInfo += `<li>色: ${navStyles.color}</li>`;
+                        debugInfo += '</ul>';
+                    }
+                    
+                    // アップグレードボタンのスタイル
+                    if (upgradeBtn) {
+                        const btnStyles = window.getComputedStyle(upgradeBtn);
+                        debugInfo += '<p><strong>アップグレードボタンスタイル:</strong></p><ul>';
+                        debugInfo += `<li>マージン: ${btnStyles.margin}</li>`;
+                        debugInfo += `<li>パディング: ${btnStyles.padding}</li>`;
+                        debugInfo += `<li>背景色: ${btnStyles.backgroundColor}</li>`;
+                        debugInfo += '</ul>';
+                    }
+                    
+                    debug.innerHTML = debugInfo;
+                } catch (e) {
+                    debug.innerHTML = '<h3>デバッグ情報</h3><p style="color: red;">エラー: ' + e.message + '</p>';
+                }
+            };
+        }
+        
+        checkStyles('staff-frame', 'staff-debug');
+        checkStyles('shift-frame', 'shift-debug');
+    </script>
+</body>
+</html>

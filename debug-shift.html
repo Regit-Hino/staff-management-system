@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>シフト編集デバッグ - シフト管理システム</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/common-layout.css?v=2.0.3">
+    <link rel="stylesheet" href="css/shift-management.css">
+    <style>
+        .debug-panel {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: white;
+            border: 2px solid #007bff;
+            padding: 15px;
+            border-radius: 8px;
+            z-index: 2000;
+            max-width: 300px;
+            font-size: 12px;
+        }
+        .debug-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            margin: 2px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .debug-output {
+            background: #f8f9fa;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-panel">
+        <h4>デバッグパネル</h4>
+        <button class="debug-btn" onclick="testShiftSave()">簡易シフト(○)作成</button>
+        <button class="debug-btn" onclick="testComplexShift()">複雑シフト作成</button>
+        <button class="debug-btn" onclick="testMultipleShifts()">複数スタッフシフト作成</button>
+        <button class="debug-btn" onclick="testAssignmentCount()">割当人数詳細確認</button>
+        <button class="debug-btn" onclick="testTimeNormalization()">時刻補完テスト</button>
+        <button class="debug-btn" onclick="showLocalStorage()">localStorage確認</button>
+        <button class="debug-btn" onclick="clearShiftData()">データクリア</button>
+        <button class="debug-btn" onclick="refreshTable()">テーブル更新</button>
+        <div class="debug-output" id="debugOutput">
+            コンソールを開いてください（F12）
+        </div>
+    </div>
+
+    <div class="header">
+        <div class="header-left">
+            <select class="company-select">
+                <option>会社</option>
+            </select>
+            <div class="logo">シフト番長</div>
+        </div>
+        <div class="header-right">
+            <i class="fas fa-bell notification-icon"></i>
+            <span class="user-name">日野</span>
+        </div>
+    </div>
+    
+    <div class="container">
+        <nav class="sidebar">
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-chart-bar"></i>
+                グラフ
+            </a>
+            <a href="index.html" class="nav-item">
+                <i class="nav-icon fas fa-users"></i>
+                スタッフ管理
+            </a>
+            <a href="#" class="nav-item active">
+                <i class="nav-icon fas fa-calendar-alt"></i>
+                シフト管理
+            </a>
+        </nav>
+        
+        <main class="main-content">
+            <div class="breadcrumb">
+                <a href="#" class="breadcrumb-back">←</a>
+                シフト表　デバッグモード
+            </div>
+            
+            <!-- タブナビゲーション -->
+            <div class="tab-navigation">
+                <div class="tab active">
+                    <i class="fas fa-calendar-alt"></i>
+                    シフト
+                </div>
+            </div>
+            
+            <!-- カレンダーヘッダー -->
+            <div class="calendar-header">
+                <div class="calendar-navigation">
+                    <button class="nav-btn" id="prevPeriod">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="today-btn">今日</button>
+                    <button class="nav-btn" id="nextPeriod">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <span class="period-display" id="periodDisplay">2025年6月1日 - 2025年6月30日</span>
+                </div>
+                
+                <div class="calendar-controls">
+                    <div class="view-selector">
+                        <select id="viewType">
+                            <option value="day">日</option>
+                            <option value="week">週</option>
+                            <option value="month" selected>月</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- シフト表 -->
+            <div class="shift-table-container">
+                <table class="shift-table" id="shiftTable">
+                    <!-- JavaScriptで生成 -->
+                </table>
+            </div>
+        </main>
+    </div>
+    
+    <!-- シフト編集モーダル -->
+    <div id="shiftEditModal" class="modal shift-edit-modal">
+        <div class="modal-content shift-edit-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="shiftEditTitle">シフト編集</h3>
+                <button class="modal-close" onclick="closeShiftEditModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="shift-form">
+                    <div class="shift-info">
+                        <div class="shift-status">業務はありません</div>
+                    </div>
+                    
+                    <div class="shift-input-section">
+                        <div class="input-row">
+                            <div class="input-group">
+                                <input type="text" id="shiftLabel" class="shift-input" placeholder="レジ">
+                                <span class="input-label">ラベル</span>
+                            </div>
+                        </div>
+                        
+                        <div class="input-row">
+                            <div class="input-group">
+                                <input type="text" id="shiftStartTime" class="shift-input time-input" placeholder="10:00" maxlength="5">
+                                <span class="input-label">から</span>
+                            </div>
+                        </div>
+                        
+                        <div class="input-row">
+                            <div class="input-group">
+                                <input type="text" id="shiftEndTime" class="shift-input time-input" placeholder="21:00" maxlength="5">
+                                <span class="input-label">まで</span>
+                            </div>
+                        </div>
+                        
+                        <div class="input-row">
+                            <div class="input-group">
+                                <input type="text" id="shiftBreakTime" class="shift-input time-input" placeholder="0:00" maxlength="5">
+                                <span class="input-label">休憩時間</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="color-selection">
+                        <div class="color-grid">
+                            <div class="color-option none-option selected" data-color="">
+                                <span>無し</span>
+                            </div>
+                            <div class="color-option" data-color="#64b5f6" style="background-color: #64b5f6;"></div>
+                            <div class="color-option" data-color="#4caf50" style="background-color: #4caf50;"></div>
+                            <div class="color-option" data-color="#e91e63" style="background-color: #e91e63;"></div>
+                            <div class="color-option" data-color="#9c27b0" style="background-color: #9c27b0;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-register">
+                        <div class="quick-register-label">簡易登録</div>
+                        <div class="quick-register-options">
+                            <button type="button" class="quick-btn" data-type="attendance">○</button>
+                            <button type="button" class="quick-btn" data-type="absence">×</button>
+                            <button type="button" class="quick-btn" data-type="paid-leave">有休</button>
+                        </div>
+                    </div>
+                    
+                    <div class="shift-options">
+                        <div class="option-row">
+                            <input type="checkbox" id="shiftConfirmed" class="option-checkbox">
+                            <label for="shiftConfirmed" class="option-label">確定</label>
+                        </div>
+                        
+                        <div class="option-row">
+                            <input type="checkbox" id="weeklyRepeat" class="option-checkbox">
+                            <label for="weeklyRepeat" class="option-label">毎週リピート</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="delete-btn" onclick="deleteShift()">
+                    <i class="fas fa-trash"></i>
+                </button>
+                <button type="button" class="btn-modal btn-modal-primary" onclick="saveShift()">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/shift-management.js"></script>
+    <script>
+        // デバッグ関数
+        function testShiftSave() {
+            console.log('=== テストシフト作成開始 ===');
+            
+            // テスト用のスタッフとデートを設定
+            currentEditingStaff = '日野 真文';
+            currentEditingDate = {
+                year: 2025,
+                month: 6,
+                date: 16,
+                day: 1
+            };
+            
+            // テストデータ（簡易登録）
+            const testShift = {
+                label: '',
+                startTime: '',
+                endTime: '',
+                breakTime: '',
+                color: '',
+                confirmed: false,
+                weeklyRepeat: false,
+                quickType: 'attendance'
+            };
+            
+            console.log('Test shift data:', testShift);
+            
+            // 直接保存してみる
+            saveShiftData(currentEditingStaff, currentEditingDate, testShift);
+            
+            // テーブル更新
+            renderShiftTable();
+            
+            updateDebugOutput('テストシフト（○）を作成しました');
+        }
+        
+        function testComplexShift() {
+            console.log('=== 複雑なテストシフト作成 ===');
+            
+            currentEditingStaff = '日野 真文';
+            currentEditingDate = {
+                year: 2025,
+                month: 6,
+                date: 1,  // 6月1日に「レジ打ち」シフトを作成
+                day: 0
+            };
+            
+            // 「レジ打ち」シフトでセル幅テスト
+            const testShift = {
+                label: 'レジ打ち',
+                startTime: '10',  // 10:00に自動補完される
+                endTime: '21',   // 21:00に自動補完される
+                breakTime: '1',  // 1:00に自動補完される
+                color: '#4caf50',
+                confirmed: false,
+                weeklyRepeat: false,
+                quickType: null
+            };
+            
+            console.log('Complex test shift data (before validation):', testShift);
+            
+            // バリデーション関数を通して自動補完をテスト
+            if (validateShiftData(testShift)) {
+                console.log('Complex test shift data (after validation):', testShift);
+                saveShiftData(currentEditingStaff, currentEditingDate, testShift);
+                renderShiftTable();
+                updateDebugOutput('レジ打ちテストシフト（95px幅基準）を作成しました');
+            } else {
+                updateDebugOutput('バリデーションエラー');
+            }
+        }
+        
+        function testTimeNormalization() {
+            console.log('=== 時刻補完テスト ===');
+            
+            const testCases = ['1', '12', '10:5', '9:30', '24', 'abc', ''];
+            testCases.forEach(input => {
+                const result = normalizeTime(input);
+                console.log(`"${input}" -> "${result}"`);
+                updateDebugOutput(`"${input}" -> "${result}"`);
+            });
+        }
+        
+        function testMultipleShifts() {
+            console.log('=== 複数スタッフシフト作成（割当人数テスト用） ===');
+            
+            // 同じ日に複数スタッフのシフトを作成
+            const testDate = {
+                year: 2025,
+                month: 6,
+                date: 18,
+                day: 3
+            };
+            
+            const staffShifts = [
+                { name: '日野 真文', shift: { quickType: 'attendance', label: '', startTime: '', endTime: '', breakTime: '', color: '', confirmed: false, weeklyRepeat: false } },
+                { name: 'Regit 高木', shift: { label: 'レジ', startTime: '10:00', endTime: '18:00', breakTime: '1:00', color: '#4caf50', confirmed: false, weeklyRepeat: false } },
+                { name: 'タロウ', shift: { quickType: 'paid-leave', label: '', startTime: '', endTime: '', breakTime: '', color: '', confirmed: false, weeklyRepeat: false } }
+            ];
+            
+            staffShifts.forEach(({ name, shift }) => {
+                console.log(`Creating shift for ${name}:`, shift);
+                if (validateShiftData(shift)) {
+                    saveShiftData(name, testDate, shift);
+                }
+            });
+            
+            renderShiftTable();
+            
+            // 割当人数を確認
+            const count = countAssignedStaff('6/18');
+            updateDebugOutput(`6/18の割当人数: ${count}人 (期待値: 3人)`);
+        }
+        
+        function testAssignmentCount() {
+            console.log('=== 割当人数詳細テスト ===');
+            
+            const testDates = ['6/16', '6/17', '6/18', '6/19', '6/20'];
+            
+            testDates.forEach(dateStr => {
+                const count = countAssignedStaff(dateStr);
+                console.log(`${dateStr}の割当人数: ${count}人`);
+                updateDebugOutput(`${dateStr}: ${count}人`);
+            });
+            
+            // シフトデータの詳細も表示
+            const shifts = getShiftData();
+            console.log('All shift data:', shifts);
+            updateDebugOutput('詳細はコンソールを確認してください');
+        }
+        
+        function showLocalStorage() {
+            console.log('=== localStorage確認 ===');
+            const data = localStorage.getItem('shiftScheduleData');
+            console.log('Raw localStorage data:', data);
+            
+            if (data) {
+                const parsed = JSON.parse(data);
+                console.log('Parsed data:', parsed);
+                updateDebugOutput(JSON.stringify(parsed, null, 2));
+            } else {
+                updateDebugOutput('localStorage にデータがありません');
+            }
+        }
+        
+        function clearShiftData() {
+            localStorage.removeItem('shiftScheduleData');
+            renderShiftTable();
+            updateDebugOutput('シフトデータをクリアしました');
+        }
+        
+        function refreshTable() {
+            console.log('=== テーブル更新 ===');
+            renderShiftTable();
+            
+            // 割当人数の確認
+            setTimeout(() => {
+                const dates = generateDateRange();
+                let summary = '更新後の割当人数:\n';
+                dates.slice(0, 7).forEach(dateInfo => { // 最初の7日間のみ表示
+                    const count = countAssignedStaff(dateInfo.fullDate);
+                    summary += `${dateInfo.fullDate}: ${count}人\n`;
+                });
+                updateDebugOutput(summary);
+            }, 100);
+        }
+        
+        function updateDebugOutput(message) {
+            const output = document.getElementById('debugOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            output.innerHTML = `[${timestamp}] ${message}<br>` + output.innerHTML;
+        }
+        
+        // ページ読み込み時の初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDebugOutput('デバッグページが読み込まれました。コンソールを開いて詳細ログを確認してください。');
+        });
+    </script>
+</body>
+</html>

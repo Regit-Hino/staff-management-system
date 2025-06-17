@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>シフト管理 - シフト管理システム</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="css/staff-management.css">
+    <link rel="stylesheet" href="css/common-layout.css?v=2.0.3">
     <link rel="stylesheet" href="css/shift-management.css">
 </head>
 <body>
@@ -157,33 +157,11 @@
                 </div>
             </div>
             
-            <!-- シフトカレンダー -->
-            <div class="shift-calendar">
-                <div class="calendar-wrapper">
-                    <div class="staff-column">
-                        <!-- 日付ヘッダーに対応する空白セル -->
-                        <div class="staff-header-spacer"></div>
-                        
-                        <div class="summary-row">
-                            <div class="summary-label">割当人数</div>
-                        </div>
-                        <div class="summary-row">
-                            <div class="summary-label">人時</div>
-                        </div>
-                        <div class="summary-row">
-                            <div class="summary-label">人件費</div>
-                        </div>
-                        
-                        <!-- スタッフリスト -->
-                        <div class="staff-list" id="staffList">
-                            <!-- スタッフはJavaScriptで動的に生成 -->
-                        </div>
-                    </div>
-                    
-                    <div class="calendar-grid" id="calendarGrid">
-                        <!-- カレンダーグリッドはJavaScriptで動的に生成 -->
-                    </div>
-                </div>
+            <!-- シフト表 - 参考画像に完全一致 -->
+            <div class="shift-table-container">
+                <table class="shift-table" id="shiftTable">
+                    <!-- 参考画像通りのテーブル構造をJavaScriptで生成 -->
+                </table>
             </div>
             
             <!-- ボトムツールバー -->
@@ -257,6 +235,112 @@
                     <button class="range-btn cancel" onclick="closeCustomRangeModal()">閉じる</button>
                     <button class="range-btn confirm" onclick="applyCustomRange()">適用</button>
                 </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- シフト編集モーダル -->
+    <div id="shiftEditModal" class="modal shift-edit-modal">
+        <div class="modal-content shift-edit-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="shiftEditTitle">日野 真文 - 2025年6月5日（木）</h3>
+                <button class="modal-close" onclick="closeShiftEditModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="shift-form">
+                    <!-- 業務情報表示 -->
+                    <div class="shift-info">
+                        <div class="shift-status">業務はありません</div>
+                    </div>
+                    
+                    <!-- シフト入力フォーム -->
+                    <div class="shift-input-section">
+                        <div class="input-row">
+                            <div class="input-group">
+                                <input type="text" id="shiftLabel" class="shift-input" placeholder="レジ">
+                                <span class="input-label">ラベル</span>
+                            </div>
+                        </div>
+                        
+                        <div class="input-row">
+                            <div class="input-group">
+                                <input type="text" id="shiftStartTime" class="shift-input time-input" placeholder="10:00" maxlength="5">
+                                <span class="input-label">から</span>
+                            </div>
+                        </div>
+                        
+                        <div class="input-row">
+                            <div class="input-group">
+                                <input type="text" id="shiftEndTime" class="shift-input time-input" placeholder="21:00" maxlength="5">
+                                <span class="input-label">まで</span>
+                            </div>
+                        </div>
+                        
+                        <div class="input-row">
+                            <div class="input-group">
+                                <input type="text" id="shiftBreakTime" class="shift-input time-input" placeholder="0:00" maxlength="5">
+                                <span class="input-label">休憩時間</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- カラー選択 -->
+                    <div class="color-selection">
+                        <div class="color-grid">
+                            <div class="color-option none-option selected" data-color="">
+                                <span>無し</span>
+                            </div>
+                            <div class="color-option" data-color="#64b5f6" style="background-color: #64b5f6;"></div>
+                            <div class="color-option" data-color="#4caf50" style="background-color: #4caf50;"></div>
+                            <div class="color-option" data-color="#e91e63" style="background-color: #e91e63;"></div>
+                            <div class="color-option" data-color="#9c27b0" style="background-color: #9c27b0;"></div>
+                            <div class="color-option" data-color="#26a69a" style="background-color: #26a69a;"></div>
+                            <div class="color-option" data-color="#1976d2" style="background-color: #1976d2;"></div>
+                            <div class="color-option" data-color="#d4ac0d" style="background-color: #d4ac0d;"></div>
+                            <div class="color-option" data-color="#7f8c8d" style="background-color: #7f8c8d;"></div>
+                            <div class="color-option" data-color="#424242" style="background-color: #424242;"></div>
+                            <div class="color-option" data-color="#e53935" style="background-color: #e53935;"></div>
+                            <div class="color-option" data-color="#ff9800" style="background-color: #ff9800;"></div>
+                            <div class="color-option" data-color="#009688" style="background-color: #009688;"></div>
+                            <div class="color-option" data-color="#673ab7" style="background-color: #673ab7;"></div>
+                            <div class="color-option" data-color="#8bc34a" style="background-color: #8bc34a;"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 簡易登録 -->
+                    <div class="quick-register">
+                        <div class="quick-register-label">簡易登録</div>
+                        <div class="quick-register-options">
+                            <button type="button" class="quick-btn" data-type="attendance">○</button>
+                            <button type="button" class="quick-btn" data-type="absence">×</button>
+                            <button type="button" class="quick-btn" data-type="paid-leave">有休</button>
+                            <button type="button" class="quick-btn" data-type="half-leave">半有休</button>
+                            <button type="button" class="quick-btn" data-type="legal-holiday">法定休日</button>
+                            <button type="button" class="quick-btn" data-type="non-legal-holiday">法定外休日</button>
+                        </div>
+                    </div>
+                    
+                    <!-- オプション -->
+                    <div class="shift-options">
+                        <div class="option-row">
+                            <input type="checkbox" id="shiftConfirmed" class="option-checkbox">
+                            <label for="shiftConfirmed" class="option-label">確定</label>
+                            <button type="button" class="help-btn">?</button>
+                        </div>
+                        
+                        <div class="option-row">
+                            <input type="checkbox" id="weeklyRepeat" class="option-checkbox">
+                            <label for="weeklyRepeat" class="option-label">毎週リピート</label>
+                            <span class="pro-badge">Pro</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="delete-btn" onclick="deleteShift()">
+                    <i class="fas fa-trash"></i>
+                </button>
+                <button type="button" class="btn-modal btn-modal-primary" onclick="saveShift()">編集</button>
             </div>
         </div>
     </div>
