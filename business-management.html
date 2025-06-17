@@ -540,6 +540,277 @@
                     </div>
                 </div>
             </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeBusinessDetail()">キャンセル</button>
+                <button class="btn btn-primary" onclick="saveBusinessDetail()">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- セクション作成モーダル -->
+    <div id="sectionCreateModal" class="modal section-create-modal">
+        <div class="modal-content section-create-content">
+            <div class="modal-header">
+                <h3 class="modal-title">業務セクション</h3>
+                <button class="modal-close" onclick="closeSectionCreateModal()">&times;</button>
+            </div>
+            <div class="modal-body section-create-body">
+                <div class="section-form-container">
+                    <div class="form-group">
+                        <label class="form-label">業務名</label>
+                        <select id="sectionBusinessSelect" class="form-input">
+                            <option value="">業務名を選択</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">ラベル（必須）</label>
+                        <input type="text" id="sectionLabel" class="form-input" placeholder="業務名">
+                        <button class="color-picker-btn" style="margin-top: 10px;" onclick="showSectionColorPicker()">
+                            <div class="color-preview" id="sectionColorPreview" style="background-color: #ff6b35;"></div>
+                            色塗り
+                        </button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">説明</label>
+                        <textarea id="sectionDescription" class="form-textarea" placeholder="朝昼、レジ"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="checkbox" id="sectionHoliday" class="form-checkbox">
+                        <label for="sectionHoliday" class="form-checkbox-label">休憩</label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">シフト表に表示（セクション）</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="sectionShowCount" class="form-checkbox" checked>
+                                <label for="sectionShowCount" class="form-checkbox-label">カウント</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions" style="padding: 20px; border-top: 1px solid #dee2e6; text-align: right;">
+                <button type="button" class="btn btn-primary" onclick="saveSection()">作成</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- セクション詳細モーダル -->
+    <div id="sectionDetailModal" class="modal section-detail-modal">
+        <div class="modal-content section-detail-content">
+            <div class="modal-header">
+                <div class="breadcrumb-detail">
+                    <span>業務セクション</span>
+                    <i class="fas fa-chevron-right"></i>
+                    <span id="sectionDetailName">レジ</span>
+                </div>
+                <div class="detail-actions">
+                    <button class="btn btn-outline" onclick="editSection()">
+                        <i class="fas fa-edit"></i>
+                        編集
+                    </button>
+                    <button class="btn btn-outline" onclick="closeSectionDetail()">
+                        戻る
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body section-detail-body">
+                <div class="section-detail-info">
+                    <div class="section-summary">
+                        <span id="detailSectionName">レジ</span>
+                        <span id="detailSectionDescription">レジ対応</span>
+                    </div>
+                    
+                    <!-- 詳細セクション -->
+                    <div class="section-component">
+                        <div class="section-component-header">
+                            <h3>詳細</h3>
+                        </div>
+                        <div class="section-component-content">
+                            <div class="detail-form-group">
+                                <label class="detail-label">ラベル（必須）</label>
+                                <div class="detail-value">
+                                    <span id="detailSectionLabel">レジ</span>
+                                    <button class="btn-color-selector">色塗り</button>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-form-group">
+                                <label class="detail-label">説明</label>
+                                <div class="detail-value" id="detailSectionDescText">レジ対応</div>
+                            </div>
+                            
+                            <div class="detail-form-group">
+                                <input type="checkbox" id="detailSectionHoliday" class="detail-checkbox">
+                                <label for="detailSectionHoliday" class="detail-checkbox-label">休憩</label>
+                            </div>
+                            
+                            <div class="detail-form-group">
+                                <label class="detail-label">シフト表に表示（セクション）</label>
+                                <div class="detail-checkbox-group">
+                                    <input type="checkbox" id="detailSectionShowCount" class="detail-checkbox" checked>
+                                    <label for="detailSectionShowCount" class="detail-checkbox-label">カウント</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 配置スタッフセクション -->
+                    <div class="section-component">
+                        <div class="section-component-header">
+                            <h3>配置スタッフ</h3>
+                        </div>
+                        <div class="section-component-content">
+                            <div class="staff-actions">
+                                <button class="btn-staff-action">全員選択</button>
+                                <button class="btn-staff-action">全員解除</button>
+                            </div>
+                            <div class="staff-list" id="sectionStaffList">
+                                <!-- スタッフリストはJavaScriptで生成 -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- タイムプランセクション -->
+                    <div class="section-component">
+                        <div class="section-component-header">
+                            <h3>タイムプラン</h3>
+                            <button class="btn btn-primary" onclick="showTimePlanModal()">作成</button>
+                        </div>
+                        <div class="section-component-content">
+                            <div id="timePlanList" class="time-plan-list">
+                                <div class="empty-state-small">
+                                    <p>タイムプランがありません。</p>
+                                    <p>上の作成ボタンから業務を作成してください。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- カレンダーセクション -->
+                    <div class="section-component">
+                        <div class="section-component-header">
+                            <h3>カレンダー</h3>
+                        </div>
+                        <div class="section-component-content">
+                            <div class="calendar-controls">
+                                <button class="btn btn-sm" onclick="navigateCalendar(-1)">&lt;</button>
+                                <span class="btn-today" onclick="goToToday()">今日</span>
+                                <button class="btn btn-sm" onclick="navigateCalendar(1)">&gt;</button>
+                                <span class="calendar-period" id="calendarPeriod">2025年6月1日 - 2025年6月30日</span>
+                            </div>
+                            
+                            <!-- タイムプラン配置カレンダー -->
+                            <div class="timeplan-calendar-section">
+                                <div class="timeplan-calendar-header" id="timePlanCalendarHeader">
+                                    <!-- JavaScriptで曜日ヘッダーを生成 -->
+                                </div>
+                                <div class="timeplan-calendar-body" id="timePlanCalendarBody">
+                                    <!-- JavaScriptで月別カレンダーを生成 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- タイムプラン作成モーダル -->
+    <div id="timePlanModal" class="modal time-plan-modal">
+        <div class="modal-content time-plan-content">
+            <div class="modal-header">
+                <h3 class="modal-title">時間毎のタイムプラン</h3>
+                <button class="modal-close" onclick="closeTimePlanModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">title</label>
+                    <input type="text" id="timePlanTitle" class="form-input" placeholder="title">
+                </div>
+                
+                <div class="time-plan-slots" id="timePlanSlots">
+                    <div class="time-slot">
+                        <div class="time-slot-header">
+                            <label>から</label>
+                            <label>まで</label>
+                            <label>必要人数</label>
+                        </div>
+                        <div class="time-slot-inputs">
+                            <input type="text" class="form-input time-input" placeholder="9:00" data-field="start">
+                            <input type="text" class="form-input time-input" placeholder="10:00" data-field="end">
+                            <input type="number" class="form-input number-input" placeholder="4" data-field="count">
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="button" class="btn btn-outline" onclick="addTimeSlot()">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div class="modal-actions" style="padding: 20px; border-top: 1px solid #dee2e6; text-align: right;">
+                <button type="button" class="btn btn-primary" onclick="saveTimePlan()">確定</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- セクション成功モーダル -->
+    <div id="sectionSuccessModal" class="modal success-modal">
+        <div class="modal-content success-content">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeSectionSuccessModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="success-icon">
+                    <div class="checkmark-circle">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </div>
+                <h3>業務セクションを作成しました。</h3>
+                <button class="btn btn-primary" onclick="closeSectionSuccessModal()">確認</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- タイムプラン選択モーダル -->
+    <div id="timePlanSelectionModal" class="modal timeplan-selection-modal">
+        <div class="modal-content timeplan-selection-content">
+            <div class="modal-header">
+                <h3 class="modal-title">タイムプランを選択</h3>
+                <button class="modal-close" onclick="closeTimePlanSelectionModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="timePlanSelectionList" class="timeplan-selection-list">
+                    <!-- JavaScriptで動的に生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- タイムプラン削除確認モーダル -->
+    <div id="timePlanRemoveModal" class="modal timeplan-remove-modal">
+        <div class="modal-content timeplan-remove-content">
+            <div class="modal-header">
+                <h3 class="modal-title">タイムプランを削除</h3>
+                <button class="modal-close" onclick="closeTimePlanRemoveModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="timePlanRemoveMessage">このタイムプランを削除してもよろしいですか？</p>
+                <div class="timeplan-remove-info">
+                    <div class="timeplan-remove-details">
+                        <span id="timePlanRemoveTitle" class="timeplan-remove-title"></span>
+                        <span id="timePlanRemoveDate" class="timeplan-remove-date"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeTimePlanRemoveModal()">キャンセル</button>
+                <button class="btn btn-danger" onclick="confirmTimePlanRemoval()">削除</button>
+            </div>
         </div>
     </div>
     

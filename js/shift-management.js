@@ -6,6 +6,9 @@ let viewType = 'month';
 let attendeeOnlyFilter = false;
 let confirmedOnlyFilter = false;
 
+// 業務管理との連携用
+let businessData = [];
+
 // スタッフデータをスタッフ管理ページから取得
 function getStaffData() {
     try {
@@ -72,6 +75,43 @@ function initializeShiftData() {
     return shiftData;
 }
 
+// 業務データを読み込み
+function loadBusinessData() {
+    try {
+        const data = localStorage.getItem('businessManagementData');
+        if (data) {
+            businessData = JSON.parse(data);
+            console.log('業務データ読み込み完了:', businessData);
+        } else {
+            // サンプル業務データを作成（テスト用）
+            businessData = [
+                {
+                    id: 'business_sample_1',
+                    label: 'ホール',
+                    color: '#007bff',
+                    description: 'フロアサービス業務',
+                    startTime: '10:00',
+                    endTime: '22:00',
+                    breakTime: '1:00'
+                },
+                {
+                    id: 'business_sample_2',
+                    label: 'キッチン',
+                    color: '#28a745',
+                    description: '厨房業務',
+                    startTime: '09:00',
+                    endTime: '21:00',
+                    breakTime: '1:00'
+                }
+            ];
+            console.log('サンプル業務データを作成:', businessData);
+        }
+    } catch (error) {
+        console.error('業務データ読み込みエラー:', error);
+        businessData = [];
+    }
+}
+
 // シフトデータの初期化
 let shiftData = initializeShiftData();
 
@@ -83,6 +123,9 @@ document.addEventListener('DOMContentLoaded', function() {
     staffData = getStaffData();
     shiftData = initializeShiftData();
     
+    // 業務データを読み込み
+    loadBusinessData();
+    
     initializeCalendar();
     setupEventListeners();
     setupShiftEditListeners();
@@ -90,6 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('シフト管理画面初期化完了');
     console.log('使用スタッフデータ:', staffData);
+    console.log('使用業務データ:', businessData);
 });
 
 // カレンダー初期化
@@ -377,6 +421,30 @@ function renderShiftTable() {
     });
     html += '</tr>';
     
+    // 業務行（人件費の直下に追加）
+    businessData.forEach(business => {
+        html += '<tr class="business-row">';
+        html += `<td class="business-label" style="background-color: ${business.color}; color: white; font-weight: 500; padding: 6px 12px;">${business.label}</td>`;
+        dates.forEach(dateInfo => {
+            const requiredCount = getRequiredStaffCount(business, dateInfo);
+            const assignedCount = getAssignedStaffCount(business, dateInfo);
+            const todayColumnClass = dateInfo.isToday ? ' today-column' : '';
+            
+            let displayText = '';
+            let textColor = '';
+            if (requiredCount > 0) {
+                displayText = `${assignedCount}/${requiredCount}`;
+                // 人数が足りていない場合は赤色にする
+                if (assignedCount < requiredCount) {
+                    textColor = 'color: red;';
+                }
+            }
+            
+            html += `<td class="${todayColumnClass}" style="font-family: 'Yu Gothic', sans-serif; font-weight: bold; text-align: center; ${textColor}">${displayText}</td>`;
+        });
+        html += '</tr>';
+    });
+    
     // スタッフ行
     filteredStaff.forEach((staff, staffIndex) => {
         html += '<tr class="staff-row">';
@@ -561,6 +629,61 @@ function countAssignedStaff(dateString) {
     
     console.log('Total assigned staff count:', count);
     return count;
+}
+
+// 業務の必要人数を取得（曜日別設定）
+function getRequiredStaffCount(business, dateInfo) {
+    // 業務管理で設定された曜日別必要人数を取得
+    // 曜日: 0=日曜日, 1=月曜日, ..., 6=土曜日
+    const dayOfWeek = dateInfo.day;
+    
+    // 業務管理で実際に設定された曜日別必要人数を使用
+    if (business.weeklyRequiredStaff && business.weeklyRequiredStaff[dayOfWeek] !== undefined) {
+        return parseInt(business.weeklyRequiredStaff[dayOfWeek]) || 0;
+    }
+    
+    // 設定されていない場合は0を返す
+    return 0;
+}
+
+// 業務に配置されたスタッフ数を取得
+function getAssignedStaffCount(business, dateInfo) {
+    const shifts = getShiftData();
+    const [month, date] = dateInfo.fullDate.split('/');
+    const currentYear = currentDate.getFullYear();
+    const shiftKey = `${currentYear}-${month}-${date}`;
+    
+    let count = 0;
+    const filteredStaff = getFilteredStaff();
+    
+    filteredStaff.forEach(staff => {
+        if (shifts[staff.name] && shifts[staff.name][shiftKey]) {
+            const shift = shifts[staff.name][shiftKey];
+            // シフトに業務が指定されている場合
+            if (shift && shift.business === business.id) {
+                count++;
+            }
+        }
+    });
+    
+    return count;
+}
+
+// 業務選択肢を設定
+function populateBusinessSelect() {
+    const select = document.getElementById('businessSelect');
+    if (!select) return;
+    
+    // 既存のオプションをクリア
+    select.innerHTML = '<option value="">業務はありません</option>';
+    
+    // 業務データからオプションを追加
+    businessData.forEach(business => {
+        const option = document.createElement('option');
+        option.value = business.id;
+        option.textContent = business.label;
+        select.appendChild(option);
+    });
 }
 
 // モーダル関連
@@ -886,6 +1009,9 @@ function openShiftEditModal(staffName, dateInfo) {
     }
     titleElement.textContent = title;
     
+    // 業務選択肢を設定
+    populateBusinessSelect();
+    
     // 既存のシフトデータを読み込み
     loadShiftData(staffName, dateInfo);
     
@@ -925,6 +1051,12 @@ function resetShiftForm() {
     document.getElementById('shiftConfirmed').checked = false;
     document.getElementById('weeklyRepeat').checked = false;
     
+    // 業務選択をリセット
+    const businessSelect = document.getElementById('businessSelect');
+    if (businessSelect) {
+        businessSelect.value = '';
+    }
+    
     // カラー選択をリセット
     document.querySelectorAll('.color-option').forEach(option => {
         option.classList.remove('selected');
@@ -951,6 +1083,12 @@ function loadShiftData(staffName, dateInfo) {
         document.getElementById('shiftEndTime').value = shift.endTime || '';
         document.getElementById('shiftBreakTime').value = shift.breakTime || '';
         document.getElementById('shiftConfirmed').checked = shift.confirmed || false;
+        
+        // 業務選択を設定
+        const businessSelect = document.getElementById('businessSelect');
+        if (businessSelect) {
+            businessSelect.value = shift.business || '';
+        }
         
         // カラー設定
         selectedColor = shift.color || '';
@@ -1006,7 +1144,8 @@ function saveShift() {
         breakTime: document.getElementById('shiftBreakTime').value.trim(),
         color: selectedColor,
         confirmed: document.getElementById('shiftConfirmed').checked,
-        weeklyRepeat: document.getElementById('weeklyRepeat').checked
+        weeklyRepeat: document.getElementById('weeklyRepeat').checked,
+        business: document.getElementById('businessSelect').value || null
     };
     
     // 簡易登録タイプを取得
@@ -1315,26 +1454,41 @@ function formatShiftDisplay(shift) {
         }
     }
     
-    // 通常のシフト表示
+    // 通常のシフト表示（3段構成：業務、時刻、ラベル）
     let content = '';
     
-    if (shift.label) {
+    // 業務情報を取得
+    const businessName = getBusinessNameById(shift.business);
+    const businessText = businessName || '業務未設定';
+    
+    // 時刻表示
+    const timeText = shift.startTime && shift.endTime ? 
+        `${shift.startTime}~${shift.endTime}` : 
+        (shift.startTime ? `${shift.startTime}~` : '');
+    
+    // ラベル表示
+    const labelText = shift.label || '';
+    
+    // シフト情報がある場合の表示
+    if (shift.label || shift.startTime || shift.endTime || shift.business) {
         const color = shift.color || '#007bff';
-        const timeText = shift.startTime && shift.endTime ? 
-            `${shift.startTime}~${shift.endTime}` : 
-            (shift.startTime ? `${shift.startTime}~` : '');
         
-        content = `<div class="shift-entry" style="background-color: ${color}; color: white; padding: 3px 4px; border-radius: 3px; font-size: 10px; margin: 1px 0; font-weight: 500; width: 85px; overflow: hidden; text-overflow: ellipsis;">
-            <div style="font-weight: bold; font-size: 11px; overflow: hidden; text-overflow: ellipsis;">${shift.label}</div>
-            ${timeText ? `<div style="font-size: 9px; margin-top: 1px; overflow: hidden; text-overflow: ellipsis;">${timeText}</div>` : ''}
-        </div>`;
-    } else if (shift.startTime && shift.endTime) {
-        content = `<div class="shift-entry" style="color: #007bff; font-size: 10px; text-align: center; font-weight: 500; padding: 3px 4px; width: 85px; overflow: hidden; text-overflow: ellipsis;">
-            ${shift.startTime}~${shift.endTime}
+        content = `<div class="shift-entry" style="background-color: ${color}; color: white; padding: 2px 3px; border-radius: 3px; font-size: 9px; margin: 1px 0; font-weight: 500; width: 85px; overflow: hidden; line-height: 1.2;">
+            <div class="shift-business" style="font-size: 11px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; margin-bottom: 1px;">${businessText}</div>
+            ${timeText ? `<div class="shift-time" style="font-size: 9px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; margin-bottom: 1px;">${timeText}</div>` : ''}
+            ${labelText ? `<div class="shift-label" style="font-size: 11px; font-weight: 400; overflow: hidden; text-overflow: ellipsis;">${labelText}</div>` : ''}
         </div>`;
     }
     
     return content;
+}
+
+// 業務IDから業務名を取得
+function getBusinessNameById(businessId) {
+    if (!businessId) return null;
+    
+    const business = businessData.find(b => b.id === businessId);
+    return business ? business.label : null;
 }
 
 // シフト削除
