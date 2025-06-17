@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>業務管理 - シフト管理システム</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/common-layout.css?v=2.0.3">
+    <link rel="stylesheet" href="css/business-management.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <select class="company-select">
+                <option>会社</option>
+            </select>
+            <div class="logo">シフト番長</div>
+        </div>
+        <div class="header-right">
+            <i class="fas fa-bell notification-icon"></i>
+            <span class="user-name">日野</span>
+        </div>
+    </div>
+    
+    <div class="container">
+        <nav class="sidebar">
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-chart-bar"></i>
+                グラフ
+            </a>
+            <a href="index.html" class="nav-item">
+                <i class="nav-icon fas fa-users"></i>
+                スタッフ管理
+            </a>
+            <a href="shift-management.html" class="nav-item">
+                <i class="nav-icon fas fa-calendar-alt"></i>
+                シフト管理
+            </a>
+            <a href="#" class="nav-item active">
+                <i class="nav-icon fas fa-briefcase"></i>
+                業務管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-clock"></i>
+                勤怠管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-umbrella-beach"></i>
+                有休管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-clipboard-list"></i>
+                各種申請/承認
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-globe"></i>
+                社員ページ
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-stopwatch"></i>
+                計画管理
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-bullhorn"></i>
+                メガホン
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-cog"></i>
+                設定
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-qrcode"></i>
+                打刻用QRコード
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-file-upload"></i>
+                シフト提出
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-id-card"></i>
+                タイムカード
+            </a>
+            <a href="#" class="nav-item">
+                <i class="nav-icon fas fa-clipboard"></i>
+                掲示板
+            </a>
+            <button class="upgrade-btn">アップグレード</button>
+        </nav>
+        
+        <main class="main-content">
+            <div class="breadcrumb">
+                <a href="#" class="breadcrumb-back">←</a>
+                業務表　NG組み合わせ
+            </div>
+            
+            <!-- タブナビゲーション -->
+            <div class="tab-navigation">
+                <div class="tab active" data-tab="business">
+                    <i class="fas fa-briefcase"></i>
+                    業務
+                </div>
+                <div class="tab" data-tab="section">
+                    <i class="fas fa-layer-group"></i>
+                    セクション
+                </div>
+                <div class="tab" data-tab="group">
+                    <i class="fas fa-users"></i>
+                    グループ
+                </div>
+                <div class="tab" data-tab="pattern">
+                    <i class="fas fa-cogs"></i>
+                    パターン
+                </div>
+                <div class="tab" data-tab="ng-pattern">
+                    <i class="fas fa-times-circle"></i>
+                    NGパターン
+                </div>
+                <div class="tab" data-tab="staff-assignment">
+                    <i class="fas fa-table"></i>
+                    配置スタッフ表
+                </div>
+            </div>
+            
+            <!-- タブコンテンツ -->
+            <div class="tab-content">
+                <!-- 業務タブ -->
+                <div class="tab-pane active" id="business-tab">
+                    <div class="tab-header">
+                        <h2 class="tab-title">業務管理</h2>
+                        <div class="tab-actions">
+                            <button class="btn-primary" onclick="showCreateModal('business')">
+                                <i class="fas fa-plus"></i>
+                                インポート
+                            </button>
+                            <button class="btn-primary" onclick="showCreateModal('business')">
+                                <i class="fas fa-download"></i>
+                                出力
+                            </button>
+                            <button class="btn-primary" onclick="showCreateModal('business')">
+                                <i class="fas fa-plus"></i>
+                                作成
+                            </button>
+                        </div>
+                    </div>
+                    <div class="tab-content-area">
+                        <div class="empty-state">
+                            <h3>業務がありません</h3>
+                            <p>上の作成ボタンから業務を作成してください。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- セクションタブ -->
+                <div class="tab-pane" id="section-tab">
+                    <div class="tab-header">
+                        <h2 class="tab-title">業務セクション</h2>
+                        <div class="tab-actions">
+                            <button class="btn-primary" onclick="showCreateModal('section')">
+                                <i class="fas fa-plus"></i>
+                                作成
+                            </button>
+                        </div>
+                    </div>
+                    <div class="tab-content-area">
+                        <div class="empty-state">
+                            <h3>業務セクションがありません</h3>
+                            <p>上の作成ボタンから業務を作成してください。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- グループタブ -->
+                <div class="tab-pane" id="group-tab">
+                    <div class="tab-header">
+                        <h2 class="tab-title">業務グループ</h2>
+                        <div class="tab-actions">
+                            <button class="btn-primary" onclick="showCreateModal('group')">
+                                <i class="fas fa-plus"></i>
+                                作成
+                            </button>
+                        </div>
+                    </div>
+                    <div class="tab-content-area">
+                        <div class="empty-state">
+                            <h3>業務がありません</h3>
+                            <p>業務管理タブから業務を作成してください。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- パターンタブ -->
+                <div class="tab-pane" id="pattern-tab">
+                    <div class="tab-header">
+                        <h2 class="tab-title">パターン設定</h2>
+                        <div class="tab-actions">
+                            <button class="btn-primary" onclick="showCreateModal('pattern')">
+                                <i class="fas fa-plus"></i>
+                                作成
+                            </button>
+                        </div>
+                    </div>
+                    <div class="tab-content-area">
+                        <div class="empty-state">
+                            <h3>業務がありません</h3>
+                            <p>業務管理タブから業務を作成してください。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- NGパターンタブ -->
+                <div class="tab-pane" id="ng-pattern-tab">
+                    <div class="tab-header">
+                        <h2 class="tab-title">NGパターン設定</h2>
+                        <div class="tab-actions">
+                            <button class="btn-primary" onclick="showCreateModal('ng-pattern')">
+                                <i class="fas fa-plus"></i>
+                                作成
+                            </button>
+                        </div>
+                    </div>
+                    <div class="tab-content-area">
+                        <div class="empty-state">
+                            <h3>業務がありません</h3>
+                            <p>業務管理タブから業務を作成してください。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 配置スタッフ表タブ -->
+                <div class="tab-pane" id="staff-assignment-tab">
+                    <div class="tab-header">
+                        <h2 class="tab-title">配置スタッフ設定</h2>
+                        <div class="tab-actions">
+                            <button class="btn-primary" onclick="showCreateModal('staff-assignment')">
+                                <i class="fas fa-plus"></i>
+                                作成
+                            </button>
+                        </div>
+                    </div>
+                    <div class="tab-content-area">
+                        <div class="empty-state">
+                            <h3>業務がありません</h3>
+                            <p>業務管理タブから業務を作成してください。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- 業務作成モーダル -->
+    <div id="businessCreateModal" class="modal business-create-modal">
+        <div class="modal-content business-create-content">
+            <div class="modal-header">
+                <h3 class="modal-title">業務管理登録</h3>
+                <button class="modal-close" onclick="closeBusinessCreateModal()">&times;</button>
+            </div>
+            <div class="modal-body business-create-body">
+                <div class="business-form-container">
+                    <!-- 左側：詳細 -->
+                    <div class="business-form-left">
+                        <h4 class="form-section-title">詳細</h4>
+                        
+                        <div class="form-row">
+                            <div class="color-picker-container">
+                                <button class="color-picker-btn" id="colorPickerBtn" onclick="showColorPicker()">
+                                    <div class="color-preview" id="colorPreview" style="background-color: #ff6b35;"></div>
+                                    色塗り
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <input type="checkbox" id="otherPeriodCheckbox" class="form-checkbox">
+                            <label for="otherPeriodCheckbox" class="form-checkbox-label">他拠点へ同期</label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">ラベル（必須）</label>
+                            <input type="text" id="businessLabel" class="form-input" placeholder="業務名">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">説明</label>
+                            <textarea id="businessDescription" class="form-textarea" placeholder="業務の説明"></textarea>
+                        </div>
+                        
+                        <div class="form-row form-time-row">
+                            <div class="form-time-group">
+                                <label class="form-label">から</label>
+                                <input type="text" id="businessStartTime" class="form-input form-time-input" placeholder="10, 10:00, 1000">
+                            </div>
+                            <div class="form-time-group">
+                                <label class="form-label">まで</label>
+                                <input type="text" id="businessEndTime" class="form-input form-time-input" placeholder="18, 18:00, 1800">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">休憩時間</label>
+                            <input type="text" id="businessBreakTime" class="form-input form-time-input" placeholder="1, 1:30">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">時給</label>
+                            <input type="text" id="businessHourlyWage" class="form-input" placeholder="1000">
+                        </div>
+                    </div>
+                    
+                    <!-- 右側：設定 -->
+                    <div class="business-form-right">
+                        <h4 class="form-section-title">設定</h4>
+                        
+                        <div class="form-row">
+                            <input type="checkbox" id="nextDayOffCheckbox" class="form-checkbox">
+                            <label for="nextDayOffCheckbox" class="form-checkbox-label">次の日休み</label>
+                        </div>
+                        
+                        <div class="form-row">
+                            <input type="checkbox" id="nightShiftCheckbox" class="form-checkbox">
+                            <label for="nightShiftCheckbox" class="form-checkbox-label">夜勤（次の日にまたぐ）</label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">割り当て方法</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" id="assignByDate" name="assignMethod" value="date" checked>
+                                    <label for="assignByDate" class="radio-label">曜日別</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="assignByStaff" name="assignMethod" value="staff">
+                                    <label for="assignByStaff" class="radio-label">スタッフごと</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">シフトの種類</label>
+                            <div class="radio-group">
+                                <div class="radio-column">
+                                    <div class="radio-item">
+                                        <input type="radio" id="shiftTypeNormal" name="shiftType" value="normal" checked>
+                                        <label for="shiftTypeNormal" class="radio-label">シフト</label>
+                                    </div>
+                                    <div class="radio-item">
+                                        <input type="radio" id="shiftTypePaidLeave" name="shiftType" value="paid-leave">
+                                        <label for="shiftTypePaidLeave" class="radio-label">有休</label>
+                                    </div>
+                                    <div class="radio-item">
+                                        <input type="radio" id="shiftTypeLegalHoliday" name="shiftType" value="legal-holiday">
+                                        <label for="shiftTypeLegalHoliday" class="radio-label">法定休日</label>
+                                    </div>
+                                </div>
+                                <div class="radio-column">
+                                    <div class="radio-item">
+                                        <input type="radio" id="shiftTypePublic" name="shiftType" value="public">
+                                        <label for="shiftTypePublic" class="radio-label">公休</label>
+                                    </div>
+                                    <div class="radio-item">
+                                        <input type="radio" id="shiftTypeHalfDay" name="shiftType" value="half-day">
+                                        <label for="shiftTypeHalfDay" class="radio-label">半有休</label>
+                                    </div>
+                                    <div class="radio-item">
+                                        <input type="radio" id="shiftTypeNonLegalHoliday" name="shiftType" value="non-legal-holiday">
+                                        <label for="shiftTypeNonLegalHoliday" class="radio-label">法定外休日</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">シフト表に表示（業務）</label>
+                            <div class="checkbox-group">
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="showCount" class="form-checkbox" checked>
+                                    <label for="showCount" class="form-checkbox-label">カウント</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="showAssignment" class="form-checkbox" checked>
+                                    <label for="showAssignment" class="form-checkbox-label">割当</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="showShiftDetail" class="form-checkbox">
+                                    <label for="showShiftDetail" class="form-checkbox-label">シフト詳出ページに非表示</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="showNecessaryPeople" class="form-checkbox">
+                                    <label for="showNecessaryPeople" class="form-checkbox-label">必要人数を満たしていない場合無効</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">KOT連携</label>
+                            <input type="text" id="kotCode" class="form-input" placeholder="休憩とコード">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">連携用ID</label>
+                            <input type="text" id="linkId" class="form-input" placeholder="101">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions" style="padding: 20px; border-top: 1px solid #dee2e6; text-align: right;">
+                <button type="button" class="btn btn-primary" onclick="saveBusiness()">作成</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 色選択モーダル -->
+    <div id="colorPickerModal" class="modal color-picker-modal">
+        <div class="modal-content color-picker-content">
+            <div class="modal-header">
+                <h3 class="modal-title">色を選択</h3>
+                <button class="modal-close" onclick="closeColorPicker()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="color-grid">
+                    <div class="color-option" data-color="#ff6b35" style="background-color: #ff6b35;" onclick="selectColor('#ff6b35')"></div>
+                    <div class="color-option" data-color="#007bff" style="background-color: #007bff;" onclick="selectColor('#007bff')"></div>
+                    <div class="color-option" data-color="#28a745" style="background-color: #28a745;" onclick="selectColor('#28a745')"></div>
+                    <div class="color-option" data-color="#ffc107" style="background-color: #ffc107;" onclick="selectColor('#ffc107')"></div>
+                    <div class="color-option" data-color="#dc3545" style="background-color: #dc3545;" onclick="selectColor('#dc3545')"></div>
+                    <div class="color-option" data-color="#6f42c1" style="background-color: #6f42c1;" onclick="selectColor('#6f42c1')"></div>
+                    <div class="color-option" data-color="#20c997" style="background-color: #20c997;" onclick="selectColor('#20c997')"></div>
+                    <div class="color-option" data-color="#fd7e14" style="background-color: #fd7e14;" onclick="selectColor('#fd7e14')"></div>
+                    <div class="color-option" data-color="#e83e8c" style="background-color: #e83e8c;" onclick="selectColor('#e83e8c')"></div>
+                    <div class="color-option" data-color="#6c757d" style="background-color: #6c757d;" onclick="selectColor('#6c757d')"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 業務詳細モーダル -->
+    <div id="businessDetailModal" class="modal business-detail-modal">
+        <div class="modal-content business-detail-content">
+            <div class="modal-header">
+                <div class="breadcrumb-detail">
+                    <span>業務管理</span>
+                    <i class="fas fa-chevron-right"></i>
+                    <span id="businessDetailName">ホール</span>
+                </div>
+                <div class="detail-actions">
+                    <button class="btn btn-outline" onclick="editBusiness()">
+                        <i class="fas fa-edit"></i>
+                        編集
+                    </button>
+                    <button class="btn btn-outline" onclick="closeBusinessDetail()">
+                        戻る
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body business-detail-body">
+                <div class="business-detail-info">
+                    <div class="detail-summary">
+                        <span id="detailBusinessName">ホール</span>
+                        <span id="detailBusinessDescription">ホール対応</span>
+                        ・
+                        <span id="detailBusinessTime">18:00 - 23:00</span>
+                        ・
+                        <span>休憩時間:</span>
+                        <span id="detailBusinessBreak">0:00</span>
+                    </div>
+                    
+                    <div class="detail-sections">
+                        <div class="detail-section">
+                            <h4>セクション (0):</h4>
+                            <p class="no-data">セクションがありません</p>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>業務セクション (0): <button class="btn-link">+</button></h4>
+                            <p class="no-data">業務セクションが設定されていません</p>
+                        </div>
+                    </div>
+                    
+                    <div class="required-staff-section">
+                        <h4>必要人数</h4>
+                        <div class="assignment-type">
+                            <input type="radio" id="settingFixed" name="assignmentType" value="fixed" checked>
+                            <label for="settingFixed">設定</label>
+                            <input type="radio" id="settingUpper" name="assignmentType" value="upper">
+                            <label for="settingUpper">上書き</label>
+                        </div>
+                        
+                        <div class="weekly-schedule">
+                            <div class="day-column">
+                                <div class="day-header sunday">日</div>
+                                <input type="number" class="day-input" value="0" min="0">
+                            </div>
+                            <div class="day-column">
+                                <div class="day-header">月</div>
+                                <input type="number" class="day-input" value="0" min="0">
+                            </div>
+                            <div class="day-column">
+                                <div class="day-header">火</div>
+                                <input type="number" class="day-input" value="0" min="0">
+                            </div>
+                            <div class="day-column">
+                                <div class="day-header">水</div>
+                                <input type="number" class="day-input" value="0" min="0">
+                            </div>
+                            <div class="day-column">
+                                <div class="day-header">木</div>
+                                <input type="number" class="day-input" value="0" min="0">
+                            </div>
+                            <div class="day-column">
+                                <div class="day-header">金</div>
+                                <input type="number" class="day-input" value="0" min="0">
+                            </div>
+                            <div class="day-column">
+                                <div class="day-header saturday">土</div>
+                                <input type="number" class="day-input" value="0" min="0">
+                            </div>
+                            <div class="day-column">
+                                <div class="day-header holiday">祝</div>
+                                <div class="day-status">未設定</div>
+                            </div>
+                        </div>
+                        
+                        <div class="edit-schedule-btn">
+                            <button class="btn btn-outline">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="assigned-staff-section">
+                        <h4>配置スタッフ</h4>
+                        <div class="staff-actions">
+                            <a href="#" class="staff-action-link">全員選択</a>
+                            <a href="#" class="staff-action-link">全員解除</a>
+                        </div>
+                        
+                        <div class="staff-list" id="assignedStaffList">
+                            <!-- スタッフリストはJavaScriptで生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/business-management.js"></script>
+</body>
+</html>

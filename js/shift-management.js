@@ -212,6 +212,25 @@ function generateDateRange() {
             }
             break;
             
+        case 'custom':
+            // カスタム期間表示
+            if (customRangeStartDate && customRangeEndDate) {
+                const start = new Date(customRangeStartDate);
+                const end = new Date(customRangeEndDate);
+                
+                for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                    dates.push({
+                        date: d.getDate(),
+                        day: d.getDay(),
+                        fullDate: `${d.getMonth() + 1}/${d.getDate()}`,
+                        month: d.getMonth() + 1,
+                        year: d.getFullYear(),
+                        isToday: isToday(d)
+                    });
+                }
+            }
+            break;
+            
         default: // month
             // 月全体表示
             const lastDay = new Date(year, month + 1, 0).getDate();
@@ -431,20 +450,62 @@ function addShiftCellClickEvents() {
 
 // フィルタリングされたスタッフ取得
 function getFilteredStaff() {
-    if (!attendeeOnlyFilter) {
-        return staffData;
-    }
+    let filteredData = staffData;
     
     // 出勤者のみフィルター適用
-    return staffData.filter(staff => {
-        return hasShiftInCurrentPeriod(staff.name);
-    });
+    if (attendeeOnlyFilter) {
+        filteredData = filteredData.filter(staff => {
+            return hasShiftInCurrentPeriod(staff.name);
+        });
+    }
+    
+    // 確定者のみフィルター適用
+    if (confirmedOnlyFilter) {
+        filteredData = filteredData.filter(staff => {
+            return hasConfirmedShiftInCurrentPeriod(staff.name);
+        });
+    }
+    
+    return filteredData;
 }
 
 // 現在の期間にシフトがあるかチェック
 function hasShiftInCurrentPeriod(staffName) {
     const dates = generateDateRange();
     return dates.some(dateInfo => hasShiftOnDate(staffName, dateInfo.fullDate));
+}
+
+// 現在の期間に確定シフトがあるかチェック
+function hasConfirmedShiftInCurrentPeriod(staffName) {
+    const dates = generateDateRange();
+    return dates.some(dateInfo => hasConfirmedShiftOnDate(staffName, dateInfo.fullDate));
+}
+
+// 特定日に確定シフトがあるかチェック
+function hasConfirmedShiftOnDate(staffName, dateString) {
+    console.log('hasConfirmedShiftOnDate called:', staffName, dateString);
+    
+    const shifts = getShiftData();
+    if (!shifts[staffName]) {
+        console.log('No shifts for staff:', staffName);
+        return false;
+    }
+    
+    const [month, date] = dateString.split('/');
+    const currentYear = currentDate.getFullYear();
+    const shiftKey = `${currentYear}-${month}-${date}`;
+    
+    console.log('Checking confirmed shiftKey:', shiftKey);
+    
+    if (shifts[staffName][shiftKey]) {
+        const shift = shifts[staffName][shiftKey];
+        const isConfirmed = shift.confirmed === true;
+        console.log('Found shift, confirmed status:', isConfirmed, shift);
+        return isConfirmed;
+    }
+    
+    console.log('No shift found for confirmed check:', staffName, shiftKey);
+    return false;
 }
 
 // 特定日にシフトがあるかチェック
@@ -596,13 +657,25 @@ function clearFilters() {
     applyFilters();
 }
 
+// カスタム期間選択用変数
+let customRangeStartDate = null;
+let customRangeEndDate = null;
+let isSelectingRange = false;
+
 // カスタム期間モーダル表示
 function showCustomRangeModal() {
     console.log('カスタム期間モーダル表示');
     const modal = document.getElementById('customRangeModal');
     if (modal) {
+        // 期間選択をリセット
+        customRangeStartDate = null;
+        customRangeEndDate = null;
+        isSelectingRange = false;
+        
+        // カレンダーを初期化
+        initializeCustomCalendars();
+        
         modal.style.display = 'block';
-        // カレンダー初期化などの処理をここに追加
     }
 }
 
@@ -622,11 +695,171 @@ function closeCustomRangeModal() {
     }
 }
 
+// カスタムカレンダー初期化
+function initializeCustomCalendars() {
+    const today = new Date();
+    const leftDate = new Date(today.getFullYear(), today.getMonth(), 1);
+    const rightDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+    
+    renderCustomCalendar('left', leftDate);
+    renderCustomCalendar('right', rightDate);
+    
+    // ナビゲーションイベント
+    setupCustomCalendarNavigation();
+}
+
+// カスタムカレンダー描画
+function renderCustomCalendar(side, date) {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    
+    // タイトル更新
+    const titleElement = document.getElementById(`${side}MonthTitle`);
+    if (titleElement) {
+        titleElement.textContent = `${month + 1}月 ${year}`;
+    }
+    
+    // カレンダーグリッド生成
+    const gridElement = document.getElementById(`${side}CalendarGrid`);
+    if (!gridElement) return;
+    
+    // 曜日ヘッダー
+    const dayHeaders = ['日', '月', '火', '水', '木', '金', '土'];
+    let html = '';
+    
+    dayHeaders.forEach(day => {
+        html += `<div class="day-header">${day}</div>`;
+    });
+    
+    // 月の最初の日と最後の日
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startDay = firstDay.getDay();
+    
+    // 前月の日付（空白埋め）
+    const prevMonth = new Date(year, month - 1, 0);
+    for (let i = startDay - 1; i >= 0; i--) {
+        const day = prevMonth.getDate() - i;
+        html += `<div class="calendar-day other-month" data-date="${year}-${month - 1}-${day}">${day}</div>`;
+    }
+    
+    // 当月の日付
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+        const dateString = `${year}-${month}-${day}`;
+        const isSelected = isDateInRange(new Date(year, month, day));
+        const selectedClass = isSelected ? ' selected' : '';
+        html += `<div class="calendar-day${selectedClass}" data-date="${dateString}" onclick="selectCustomDate('${dateString}')">${day}</div>`;
+    }
+    
+    // 次月の日付（空白埋め）
+    const remainingCells = 42 - (startDay + lastDay.getDate());
+    for (let day = 1; day <= remainingCells; day++) {
+        html += `<div class="calendar-day other-month" data-date="${year}-${month + 1}-${day}">${day}</div>`;
+    }
+    
+    gridElement.innerHTML = html;
+}
+
+// 期間選択処理
+function selectCustomDate(dateString) {
+    const selectedDate = new Date(dateString);
+    
+    if (!customRangeStartDate || (customRangeStartDate && customRangeEndDate)) {
+        // 新しい選択開始
+        customRangeStartDate = selectedDate;
+        customRangeEndDate = null;
+        isSelectingRange = true;
+    } else if (isSelectingRange) {
+        // 終了日選択
+        if (selectedDate >= customRangeStartDate) {
+            customRangeEndDate = selectedDate;
+        } else {
+            // 開始日より前を選択した場合、入れ替え
+            customRangeEndDate = customRangeStartDate;
+            customRangeStartDate = selectedDate;
+        }
+        isSelectingRange = false;
+    }
+    
+    console.log('期間選択:', customRangeStartDate, customRangeEndDate);
+    
+    // カレンダー再描画
+    initializeCustomCalendars();
+}
+
+// 日付が選択範囲内かチェック
+function isDateInRange(date) {
+    if (!customRangeStartDate) return false;
+    
+    if (!customRangeEndDate) {
+        return date.getTime() === customRangeStartDate.getTime();
+    }
+    
+    return date >= customRangeStartDate && date <= customRangeEndDate;
+}
+
+// カスタムカレンダーナビゲーション設定
+function setupCustomCalendarNavigation() {
+    const leftPrev = document.getElementById('leftPrev');
+    const rightNext = document.getElementById('rightNext');
+    
+    if (leftPrev) {
+        leftPrev.onclick = () => {
+            const currentTitle = document.getElementById('leftMonthTitle').textContent;
+            const [monthStr, yearStr] = currentTitle.split(' ');
+            const month = parseInt(monthStr) - 1;
+            const year = parseInt(yearStr);
+            const newDate = new Date(year, month - 1, 1);
+            renderCustomCalendar('left', newDate);
+        };
+    }
+    
+    if (rightNext) {
+        rightNext.onclick = () => {
+            const currentTitle = document.getElementById('rightMonthTitle').textContent;
+            const [monthStr, yearStr] = currentTitle.split(' ');
+            const month = parseInt(monthStr) - 1;
+            const year = parseInt(yearStr);
+            const newDate = new Date(year, month + 1, 1);
+            renderCustomCalendar('right', newDate);
+        };
+    }
+}
+
 // カスタム期間適用
 function applyCustomRange() {
     console.log('カスタム期間適用');
-    // カスタム期間の実装
+    
+    if (!customRangeStartDate || !customRangeEndDate) {
+        alert('期間を選択してください（開始日と終了日を選択）');
+        return;
+    }
+    
+    // 期間を適用
+    const startStr = formatDate(customRangeStartDate);
+    const endStr = formatDate(customRangeEndDate);
+    
+    console.log(`カスタム期間設定: ${startStr} - ${endStr}`);
+    
+    // 期間表示を更新
+    const periodDisplay = document.getElementById('periodDisplay');
+    if (periodDisplay) {
+        periodDisplay.textContent = `${startStr} - ${endStr}`;
+    }
+    
+    // カスタム期間に基づいてテーブル再描画
+    viewType = 'custom';
+    renderShiftTable();
+    
     closeCustomRangeModal();
+}
+
+// 日付フォーマット
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${year}年${month}月${day}日`;
 }
 
 // シフト編集モーダル関連の変数
@@ -1136,6 +1369,7 @@ window.clearFilters = clearFilters;
 window.showCustomRangeModal = showCustomRangeModal;
 window.closeCustomRangeModal = closeCustomRangeModal;
 window.applyCustomRange = applyCustomRange;
+window.selectCustomDate = selectCustomDate;
 window.closeShiftEditModal = closeShiftEditModal;
 window.saveShift = saveShift;
 window.deleteShift = deleteShift;
